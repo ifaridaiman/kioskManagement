@@ -6,6 +6,8 @@ import { LuPencilLine } from "react-icons/lu";
 import { MdOutlineDelete } from "react-icons/md";
 import { useMenuMaker } from "../../context/MenuMakerContext";
 import { useMenuList } from "./hooks/useMenuList";
+import { CiBoxList } from "react-icons/ci";
+import Link from "next/link";
 
 interface MenuListProps {
   onEditClick: (menu: MenuItem) => void;
@@ -75,6 +77,9 @@ const MenuList: React.FC<MenuListProps> = ({ onEditClick }) => {
                     >
                       <LuPencilLine />
                     </button>
+                    <Link href={`/inventory/${menu.id}`} >
+                      <CiBoxList />
+                    </Link>
                     <button onClick={() => deleteMenu(menu.id)}>
                       <MdOutlineDelete />
                     </button>

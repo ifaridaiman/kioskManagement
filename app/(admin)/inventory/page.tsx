@@ -1,9 +1,18 @@
-import React from 'react'
+"use client";
 
-const Inventory = () => {
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+export default function RedirectPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/menu-editor");
+  }, [router]);
+
   return (
-    <div>Inventory</div>
-  )
+    <div className="h-screen flex justify-center items-center">
+      <p>Redirecting...</p>
+    </div>
+  );
 }
-
-export default Inventory

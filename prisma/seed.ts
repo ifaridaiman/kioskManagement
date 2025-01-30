@@ -5,20 +5,20 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Seeding database...");
 
-  // Ensure Order Types exist
+  // 1️⃣ Ensure Order Types exist
   await prisma.orderType.createMany({
     data: [
-      { name: "Dine-In", description: "Order placed for dining in the restaurant" },
-      { name: "Takeaway", description: "Order placed for takeaway" }
+      { name: "Daily", description: "Order Cut off at 3pm" },
+      { name: "Catering", description: "Pre-order in bulk min 3 days before" }
     ],
     skipDuplicates: true, // Prevents duplicate errors
   });
 
   // Fetch order types after creation
-  const dineIn = await prisma.orderType.findFirst({ where: { name: "Dine-In" } });
-  const takeAway = await prisma.orderType.findFirst({ where: { name: "Takeaway" } });
+  const daily = await prisma.orderType.findFirst({ where: { name: "Daily" } });
+  const catering = await prisma.orderType.findFirst({ where: { name: "Catering" } });
 
-  // Create a Customer
+  // 2️⃣ Create a Customer
   const customer = await prisma.customer.upsert({
     where: { email: "john.doe@example.com" },
     update: {},
@@ -30,49 +30,54 @@ async function main() {
     },
   });
 
-  // Create Menu Items
+  // 3️⃣ Create Menu Items
   await prisma.menu.createMany({
     data: [
-      { title: "Nasi Lemak", description: "Delicious Malaysian coconut rice dish", price: 5.0 },
-      { title: "Roti Canai", description: "Flaky Malaysian flatbread with curry", price: 3.5 }
+      { title: "Lemang XL", description: "Delicious Malaysian coconut rice dish", price: 25.0 },
+      { title: "Lemang L", description: "Flaky Malaysian flatbread with curry", price: 20.5 },
+      { title: "Lemang M", description: "Flaky Malaysian flatbread with curry", price: 15.5 }
     ],
     skipDuplicates: true,
   });
 
-  // Fetch menu items correctly using `findFirst()`
-  const nasiLemak = await prisma.menu.findFirst({ where: { title: "Nasi Lemak" } });
-  const rotiCanai = await prisma.menu.findFirst({ where: { title: "Roti Canai" } });
+  // Fetch menu items correctly
+  const lemangXL = await prisma.menu.findFirst({ where: { title: "Lemang XL" } });
+  const lemangL = await prisma.menu.findFirst({ where: { title: "Lemang L" } });
+  const lemangM = await prisma.menu.findFirst({ where: { title: "Lemang M" } });
 
-  // Create Inventory (Only if menu items exist)
-  if (nasiLemak && rotiCanai) {
+  // 4️⃣ Create Inventory per Order Type (Valid for 7 days)
+  const now = new Date();
+  const dateEnd = new Date();
+  dateEnd.setDate(now.getDate() + 7); // Set expiry period
+
+  if (lemangXL && lemangL && lemangM && daily && catering) {
     await prisma.menuInventory.createMany({
       data: [
-        {
-          menuId: nasiLemak.id,
-          quantity: 50,
-          dateStart: new Date(),
-          dateEnd: new Date(new Date().setDate(new Date().getDate() + 7)),
-        },
-        {
-          menuId: rotiCanai.id,
-          quantity: 30,
-          dateStart: new Date(),
-          dateEnd: new Date(new Date().setDate(new Date().getDate() + 7)),
-        },
+        // Inventory for Nasi Lemak
+        { menuId: lemangXL.id, orderTypeId: daily.id, quantity: 50, dateStart: now, dateEnd },
+        { menuId: lemangXL.id, orderTypeId: catering.id, quantity: 40, dateStart: now, dateEnd },
+
+        // Inventory for Roti Canai
+        { menuId: lemangL.id, orderTypeId: daily.id, quantity: 30, dateStart: now, dateEnd },
+        { menuId: lemangL.id, orderTypeId: catering.id, quantity: 25, dateStart: now, dateEnd },
+
+        // Inventory for Roti Canai
+        { menuId: lemangM.id, orderTypeId: daily.id, quantity: 10, dateStart: now, dateEnd },
+        { menuId: lemangM.id, orderTypeId: catering.id, quantity: 15, dateStart: now, dateEnd },
       ],
       skipDuplicates: true,
     });
 
-    // Create an Order
+    // 5️⃣ Create an Order with OrderItems
     await prisma.order.create({
       data: {
         customerId: customer.id,
-        orderTypeId: dineIn.id,
+        orderTypeId: daily.id,
         status: "new",
         orderItems: {
           create: [
-            { menuId: nasiLemak.id, quantity: 2 },
-            { menuId: rotiCanai.id, quantity: 1 },
+            { menuId: lemangXL.id, quantity: 2 },
+            { menuId: lemangL.id, quantity: 1 },
           ],
         },
       },
