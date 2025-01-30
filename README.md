@@ -89,22 +89,6 @@ npm run dev
 | `npx prisma db push` | Push the schema to the database without migrations |
 | `npx prisma studio` | Open Prisma Studio (GUI for database management) |
 
----
-
-## 📦 Project Structure
-```
-📂 my-nextjs-app
- ┣ 📂 app
- ┃ ┣ 📜 page.tsx         # Main page component
- ┣ 📂 prisma
- ┃ ┣ 📜 schema.prisma    # Prisma schema file
- ┣ 📂 pages
- ┃ ┣ 📂 api
- ┃ ┃ ┣ 📜 menu.ts        # API routes (e.g., CRUD for menus)
- ┣ 📜 .env               # Environment variables
- ┣ 📜 package.json       # Dependencies and scripts
- ┣ 📜 README.md          # Documentation (you are here)
-```
 
 ---
 
