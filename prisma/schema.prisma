@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id          String  @id @default(uuid())
+  name        String
+  email       String  @unique
+  phoneNumber String
+  address     String?
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime? // Soft delete
+  
+  orders      Order[]
+}
+
+model Menu {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  price       Float
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  orderItems  OrderItem[]
+  inventory   MenuInventory?
+}
+
+model MenuInventory {
+  id        Int     @id @default(autoincrement())
+  menuId    Int     @unique
+  quantity  Int
+  dateStart DateTime
+  dateEnd   DateTime
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  // Relations
+  menu      Menu    @relation(fields: [menuId], references: [id])
+}
+
+model OrderType {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  orders      Order[]
+}
+
+model Order {
+  id          Int        @id @default(autoincrement())
+  customerId  String
+  orderTypeId Int
+  status      String
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  // Relations
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  orderType   OrderType @relation(fields: [orderTypeId], references: [id])
+  orderItems  OrderItem[]
+}
+
+model OrderItem {
+  id       Int  @id @default(autoincrement())
+  orderId  Int
+  menuId   Int
+  quantity Int  @default(1)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  // Relations
+  order Order @relation(fields: [orderId], references: [id])
+  menu  Menu  @relation(fields: [menuId], references: [id])
+}
