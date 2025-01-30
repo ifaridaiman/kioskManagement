@@ -1,37 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Next.js Prisma PostgreSQL App
 
-## Getting Started
+A **Next.js** application using **Prisma ORM** with **PostgreSQL**.
 
-First, run the development server:
+---
+
+## 📌 Getting Started
+
+### 1️⃣ Run the Development Server
+After setting up the project, start the development server:
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
+
+You can start modifying the project by editing `app/page.tsx`. Changes will be reflected automatically.
+
+---
+
+## 🛠 Environment Variables
+Before running the project, you need to configure the `.env` file.
+
+### 🔹 Create a `.env` file in the root directory with the following:
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE_NAME?schema=public"
+```
+Replace:
+- `USER` → Your PostgreSQL username (default: `postgres`)
+- `PASSWORD` → Your PostgreSQL password
+- `HOST` → Database host (e.g., `localhost` or remote server)
+- `PORT` → Default PostgreSQL port `5432`
+- `DATABASE_NAME` → Your database name
+- `schema=public` → (Default schema, modify if necessary)
+
+---
+
+## 📖 Steps to Run the Project
+
+### 1️⃣ Install Dependencies
+```bash
+npm install
+```
+
+### 2️⃣ Set Up `.env`
+Ensure the **`DATABASE_URL`** is correctly configured as shown above.
+
+### 3️⃣ Generate Prisma Client
+Run the following command to generate the Prisma Client:
+```bash
+npx prisma generate
+```
+
+### 4️⃣ Apply Database Schema
+**Depending on the scenario, use one of the following:**
+
+#### ✅ If migrations already exist
+```bash
+npx prisma migrate deploy
+```
+
+#### ✅ If setting up a new database (first-time setup)
+```bash
+npx prisma migrate dev --name init
+```
+
+#### ✅ If using `db push` (without migrations)
+```bash
+npx prisma db push
+```
+
+### 5️⃣ Start the Application
+Once the database is set up, start the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔍 Useful Prisma Commands
+| Command | Description |
+|---------|------------|
+| `npx prisma generate` | Generate Prisma Client for database queries |
+| `npx prisma migrate dev --name init` | Create a new migration and apply changes |
+| `npx prisma migrate deploy` | Apply existing migrations to the database |
+| `npx prisma db push` | Push the schema to the database without migrations |
+| `npx prisma studio` | Open Prisma Studio (GUI for database management) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📦 Project Structure
+```
+📂 my-nextjs-app
+ ┣ 📂 app
+ ┃ ┣ 📜 page.tsx         # Main page component
+ ┣ 📂 prisma
+ ┃ ┣ 📜 schema.prisma    # Prisma schema file
+ ┣ 📂 pages
+ ┃ ┣ 📂 api
+ ┃ ┃ ┣ 📜 menu.ts        # API routes (e.g., CRUD for menus)
+ ┣ 📜 .env               # Environment variables
+ ┣ 📜 package.json       # Dependencies and scripts
+ ┣ 📜 README.md          # Documentation (you are here)
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 💡 Additional Notes
+- **Prisma Studio**  
+  To visually inspect your database, run:
+  ```bash
+  npx prisma studio
+  ```
+- **Common Issues & Fixes**:
+  - **Prisma Client not found?** Run:
+    ```bash
+    npx prisma generate
+    ```
+  - **Database connection errors?** Check `.env` configuration.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-"# kioskManagement" 
+## 📄 License
+This project is **open-source** and available under the **MIT License**.
