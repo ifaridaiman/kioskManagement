@@ -7,6 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum OrderStatusEnum {
+  NEW
+  PROCESSED
+  READY_TO_PICKUP
+  COMPLETED
+}
+
+
+
 model Customer {
   id          String    @id @default(uuid())
   name        String
@@ -74,14 +83,16 @@ model Order {
 
 model OrderStatus {
   id        Int       @id @default(autoincrement())
-  orderId Int
-  status String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  deletedAt   DateTime?
+  orderId   Int
+  status    OrderStatusEnum 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   order     Order     @relation(fields: [orderId], references: [id])
+
 }
+
 
 model OrderItem {
   id        Int       @id @default(autoincrement())

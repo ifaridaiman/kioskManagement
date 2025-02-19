@@ -4,13 +4,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import StatusCard from "./components/StatusCard";
 
-export enum OrderStatus {
-  NEW = "New",
-  PROCESSED = "Processed",
-  READY_TO_PICKUP = "Ready to pickup",
-  COMPLETED = "Completed",
-}
-
 const OrderRaya = () => {
   const [orderId, setOrderId] = useState("");
    

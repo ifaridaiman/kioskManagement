@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState, useCallback } from "react";
 
 interface OrderType {
   name: string;
@@ -48,21 +49,20 @@ export const useInventoryList = (menuId: number) => {
     return response.json();
   };
 
-  
-  const getInventories = async () => {
+  // ✅ Wrap `getInventories` in `useCallback` to prevent re-creation
+  const getInventories = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await fetchInventories(1, 10);
       setInventories(response.data);
       setMenuName(response.menuName);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       alert(err.message || "An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [menuId, refresh]); // ✅ Dependencies for fetching inventories
 
   const deleteInventory = async (id: number) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this inventory?");
@@ -77,20 +77,18 @@ export const useInventoryList = (menuId: number) => {
 
       if (!response.ok) throw new Error("Failed to delete inventory");
 
-      alert("inventory deleted successfully!");
-      refreshInventories(); // Refresh the inventory list
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      alert("Inventory deleted successfully!");
+      refreshInventories(); // ✅ Refresh the inventory list safely
     } catch (error: any) {
       console.error("Error deleting inventory:", error);
       alert(error.message || "Error deleting inventory.");
     }
   };
 
-  
-
+  // ✅ Now `useEffect` won't complain because `getInventories` is stable
   useEffect(() => {
     if (menuId) getInventories();
-  }, [menuId, refresh]);
+  }, [getInventories]);
 
-  return { inventories, menuName, isLoading, refreshInventories, deleteInventory  };
+  return { inventories, menuName, isLoading, refreshInventories, deleteInventory };
 };

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { useInventory } from "../../hooks/useInventory";
-
+import { useEffect } from "react";
 interface InventoryAddProps {
   menuId: number;
   refreshInventories: () => void;
@@ -14,6 +14,8 @@ const InventoryAdd: React.FC<InventoryAddProps> = ({
   const { state, handleChange, toggleShowAddInventoryModal } = useInventory();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [orderTypes, setOrderTypes] = useState<{ id: number; name: string }[]>([]);
+  const [fetchingOrderTypes, setFetchingOrderTypes] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -48,6 +50,28 @@ const InventoryAdd: React.FC<InventoryAddProps> = ({
     }
   };
 
+  useEffect(() => {
+    const fetchOrderTypes = async () => {
+      setFetchingOrderTypes(true);
+      try {
+        const response = await fetch("/api/enum/orderType");
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Failed to fetch order types.");
+        }
+
+        setOrderTypes(result.data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err: any) {
+        setError(err.message || "Something went wrong while fetching order types.");
+      } finally {
+        setFetchingOrderTypes(false);
+      }
+    };
+
+    fetchOrderTypes();
+  }, []);
   return (
     <div className="w-screen h-screen flex justify-center items-center bg-black bg-opacity-10 absolute top-0 left-0">
       <div className="bg-white p-4 rounded min-w-80">
@@ -66,17 +90,27 @@ const InventoryAdd: React.FC<InventoryAddProps> = ({
                   htmlFor="orderTypeId"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Order Type ID
+                  Order Type
                 </label>
-                <input
-                  type="number"
+                <select
                   id="orderTypeId"
                   name="orderTypeId"
                   value={state.orderTypeId}
                   onChange={handleChange}
                   className="mt-1 px-4 h-11 text-base border block w-full rounded-md border-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   required
-                />
+                >
+                  <option value="">Select Order Type</option>
+                  {fetchingOrderTypes ? (
+                    <option disabled>Loading...</option>
+                  ) : (
+                    orderTypes.map((type) => (
+                      <option key={type.id} value={type.id}>
+                        {type.name}
+                      </option>
+                    ))
+                  )}
+                </select>
               </div>
 
               <div>

@@ -1,13 +1,7 @@
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient, OrderStatusEnum  } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-enum statusEnum {
-  NEW = "new",
-  PROCESSED = "processed",
-  READY_TO_PICKUP = "ready_to_pickup",
-  COMPLETED = "completed",
-}
 
 async function generateOrderId() {
   const lastOrder = await prisma.order.findFirst({
@@ -107,10 +101,10 @@ async function main() {
         },
         orderStatus:{
           create: [
-            { status: statusEnum.NEW },
-            { status: statusEnum.PROCESSED },
-            { status: statusEnum.READY_TO_PICKUP },
-            { status: statusEnum.COMPLETED }
+            { status: OrderStatusEnum.NEW },
+            { status: OrderStatusEnum.PROCESSED },
+            { status: OrderStatusEnum.READY_TO_PICKUP },
+            { status: OrderStatusEnum.COMPLETED }
           ]
         }
       },

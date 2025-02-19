@@ -26,6 +26,11 @@ export async function POST(req: Request): Promise<Response> {
       },
     });
 
+    if (!newInventory) {
+      throw new Error("Inventory creation failed.");
+    }
+
+    
     return new Response(JSON.stringify(newInventory), { status: 201 });
   } catch (error) {
     console.error("Error adding inventory:", error);

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState, useCallback } from "react";
 import { fetchMenus, MenuItem } from "@/utils/fetchMenus";
 
 export const useMenuList = () => {
@@ -8,20 +9,19 @@ export const useMenuList = () => {
   const [title, setTitle] = useState(""); // Filter title
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch menus from API
-  const getMenus = async () => {
+  // ✅ Wrap `getMenus` in `useCallback` to prevent re-creation
+  const getMenus = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await fetchMenus(page, limit, title);
       setMenus(data.data); // Set menu items
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       alert(err.message || "An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, limit, title]); // ✅ Dependencies to trigger re-fetch
 
   const deleteMenu = async (id: number) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this menu?");
@@ -37,18 +37,17 @@ export const useMenuList = () => {
       if (!response.ok) throw new Error("Failed to delete menu");
 
       alert("Menu deleted successfully!");
-      getMenus(); // Refresh the menu list
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getMenus(); // ✅ No warning because `getMenus` is now stable
     } catch (error: any) {
       console.error("Error deleting menu:", error);
       alert(error.message || "Error deleting menu.");
     }
   };
 
-  // Fetch data when `page` or `title` changes
+  // ✅ Now `useEffect` won't complain because `getMenus` is stable
   useEffect(() => {
     getMenus();
-  }, [page, title]);
+  }, [getMenus]);
 
   // Pagination handlers
   const handleNextPage = () => setPage((prev) => prev + 1);

@@ -29,9 +29,10 @@ CREATE TABLE "Menu" (
 CREATE TABLE "MenuInventory" (
     "id" SERIAL NOT NULL,
     "menuId" INTEGER NOT NULL,
-    "quantity" INTEGER NOT NULL,
-    "dateStart" TIMESTAMP(3) NOT NULL,
-    "dateEnd" TIMESTAMP(3) NOT NULL,
+    "orderTypeId" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL DEFAULT 0,
+    "dateStart" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "dateEnd" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -54,14 +55,26 @@ CREATE TABLE "OrderType" (
 -- CreateTable
 CREATE TABLE "Order" (
     "id" SERIAL NOT NULL,
+    "orderId" TEXT NOT NULL,
     "customerId" TEXT NOT NULL,
     "orderTypeId" INTEGER NOT NULL,
-    "status" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
 
     CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "OrderStatus" (
+    "id" SERIAL NOT NULL,
+    "orderId" INTEGER NOT NULL,
+    "status" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+
+    CONSTRAINT "OrderStatus_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -81,13 +94,19 @@ CREATE TABLE "OrderItem" (
 CREATE UNIQUE INDEX "Customer_email_key" ON "Customer"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "MenuInventory_menuId_key" ON "MenuInventory"("menuId");
+CREATE UNIQUE INDEX "MenuInventory_menuId_orderTypeId_dateStart_dateEnd_key" ON "MenuInventory"("menuId", "orderTypeId", "dateStart", "dateEnd");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "OrderType_name_key" ON "OrderType"("name");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Order_orderId_key" ON "Order"("orderId");
+
 -- AddForeignKey
 ALTER TABLE "MenuInventory" ADD CONSTRAINT "MenuInventory_menuId_fkey" FOREIGN KEY ("menuId") REFERENCES "Menu"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MenuInventory" ADD CONSTRAINT "MenuInventory_orderTypeId_fkey" FOREIGN KEY ("orderTypeId") REFERENCES "OrderType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Order" ADD CONSTRAINT "Order_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -96,7 +115,10 @@ ALTER TABLE "Order" ADD CONSTRAINT "Order_customerId_fkey" FOREIGN KEY ("custome
 ALTER TABLE "Order" ADD CONSTRAINT "Order_orderTypeId_fkey" FOREIGN KEY ("orderTypeId") REFERENCES "OrderType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "OrderStatus" ADD CONSTRAINT "OrderStatus_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_menuId_fkey" FOREIGN KEY ("menuId") REFERENCES "Menu"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

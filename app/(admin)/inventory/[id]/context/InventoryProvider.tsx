@@ -8,23 +8,23 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [showAddInventory, setShowAddInventory] = useState<boolean>(false);
   const [state, setState] = useState<InventoryState>({
-    menuId: 0,         // Default ID placeholder (should be updated dynamically)
-    orderTypeId: 0,    // Default ID placeholder
-    dateStart: "",     // Empty string for date input
-    dateEnd: "",       // Empty string for optional end date
-    quantity: 0,       // Default quantity
-    orderType: "",     // Empty string for order type
+    menuId: 0, // Default ID placeholder (should be updated dynamically)
+    orderTypeId: 0, // Default ID placeholder
+    dateStart: "", // Empty string for date input
+    dateEnd: "", // Empty string for optional end date
+    quantity: 0, // Default quantity
+    orderType: "", // Empty string for order type
   });
-  
 
-  
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
+
     setState((prev) => ({
       ...prev,
-      [name]: type === "number" ? +value : value,
+      [name]:
+        type === "number" || name.includes("Id") ? Number(value) || "" : value,
     }));
   };
 
@@ -38,7 +38,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
         setState,
         handleChange,
         showAddInventory,
-        toggleShowAddInventoryModal
+        toggleShowAddInventoryModal,
       }}
     >
       {children}
