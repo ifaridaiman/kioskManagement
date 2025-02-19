@@ -77,10 +77,10 @@ const MenuList: React.FC<MenuListProps> = ({ onEditClick }) => {
                     >
                       <LuPencilLine />
                     </button>
-                    <Link href={`/inventory/${menu.id}`} >
+                    <Link href={`/inventory/${menu.id}`} title="Inventory List">
                       <CiBoxList />
                     </Link>
-                    <button onClick={() => deleteMenu(menu.id)}>
+                    <button onClick={() => deleteMenu(menu.id)} title="">
                       <MdOutlineDelete />
                     </button>
                   </td>

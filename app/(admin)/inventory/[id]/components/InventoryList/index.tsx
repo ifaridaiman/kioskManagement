@@ -1,5 +1,4 @@
 import React from "react";
-import { LuPencilLine } from "react-icons/lu";
 import { MdOutlineDelete } from "react-icons/md";
 
 interface OrderType {
@@ -16,11 +15,13 @@ interface InventoryItem {
 interface InventoryListProps {
   inventories: InventoryItem[];
   isLoading: boolean;
+  deleteInventory: (id: number) => void;
 }
 
 const InventoryList: React.FC<InventoryListProps> = ({
   inventories,
   isLoading,
+  deleteInventory
 }) => {
   return (
     <table className="w-full rounded-tl-md">
@@ -59,11 +60,8 @@ const InventoryList: React.FC<InventoryListProps> = ({
               </td>
               <td className="px-4 py-2">{inventory.quantity}</td>
               <td className="px-4 py-2">{inventory.orderType.name}</td>
-              <td className="px-4 py-2 flex flex-row gap-4">
-                <button>
-                  <LuPencilLine />
-                </button>
-                <button>
+              <td className="px-4 py-2 flex flex-row gap-4 mx-auto text-center">
+                <button className="text-center" onClick={() => deleteInventory(inventory.id)}>
                   <MdOutlineDelete />
                 </button>
               </td>

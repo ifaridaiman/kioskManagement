@@ -12,6 +12,7 @@ interface InventoryItem {
 }
 
 interface ApiResponse {
+  menuName: string;
   data: InventoryItem[];
   meta: {
     total: number;
@@ -24,6 +25,12 @@ interface ApiResponse {
 export const useInventoryList = (menuId: number) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [inventories, setInventories] = useState<InventoryItem[]>([]);
+  const [menuName, setMenuName] = useState<string>("");
+  const [refresh, setRefresh] = useState<number>(0);
+
+  const refreshInventories = () => {
+    setRefresh((prev) => prev + 1);
+  };
 
   const fetchInventories = async (
     page = 1,
@@ -41,11 +48,13 @@ export const useInventoryList = (menuId: number) => {
     return response.json();
   };
 
+  
   const getInventories = async () => {
     setIsLoading(true);
     try {
-      const data = await fetchInventories(1, 10);
-      setInventories(data.data);
+      const response = await fetchInventories(1, 10);
+      setInventories(response.data);
+      setMenuName(response.menuName);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
@@ -55,9 +64,33 @@ export const useInventoryList = (menuId: number) => {
     }
   };
 
+  const deleteInventory = async (id: number) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this inventory?");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch("/api/inventory/delete", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!response.ok) throw new Error("Failed to delete inventory");
+
+      alert("inventory deleted successfully!");
+      refreshInventories(); // Refresh the inventory list
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Error deleting inventory:", error);
+      alert(error.message || "Error deleting inventory.");
+    }
+  };
+
+  
+
   useEffect(() => {
     if (menuId) getInventories();
-  }, [menuId]);
+  }, [menuId, refresh]);
 
-  return { inventories, isLoading };
+  return { inventories, menuName, isLoading, refreshInventories, deleteInventory  };
 };

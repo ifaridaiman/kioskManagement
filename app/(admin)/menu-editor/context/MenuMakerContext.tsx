@@ -120,6 +120,7 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
       setState({ title: "", description: "", price: 0 });
     }
   };
+  
   const handleClickShowUpdate = () => {
     if (showUpdateMenuModal) {
       // If toggling off, reset the state to default values

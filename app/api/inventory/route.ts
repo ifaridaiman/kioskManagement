@@ -46,9 +46,20 @@ export async function GET(req: Request): Promise<Response> {
       },
     });
 
+    // Fetch Menu Name
+    const menuName = await prisma.menu.findMany({
+      where: {
+        id: menu,
+      },
+      select: {
+        title: true,
+      },
+    });
+
     // Return results with metadata
     return new Response(
       JSON.stringify({
+        menuName: menuName[0].title,
         data: menus,
         meta: {
           total: totalCount,
