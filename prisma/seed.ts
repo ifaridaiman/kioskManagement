@@ -2,6 +2,29 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
+enum statusEnum {
+  NEW = "new",
+  PROCESSED = "processed",
+  READY_TO_PICKUP = "ready_to_pickup",
+  COMPLETED = "completed",
+}
+
+async function generateOrderId() {
+  const lastOrder = await prisma.order.findFirst({
+    orderBy: { createdAt: "desc" }, // Ensure we get the latest order
+  });
+
+  let nextOrderNumber = 1;
+  if (lastOrder && lastOrder.orderId) {
+    const match = lastOrder.orderId.match(/LMG-(\d+)/);
+    if (match) {
+      nextOrderNumber = parseInt(match[1], 10) + 1;
+    }
+  }
+
+  return `LMG-${String(nextOrderNumber).padStart(3, "0")}`; // Ensures format LMG-001, LMG-002, etc.
+} 
+
 async function main() {
   console.log("🌱 Seeding database...");
 
@@ -68,20 +91,32 @@ async function main() {
       skipDuplicates: true,
     });
 
+    const orderIdValue = await generateOrderId();
+
     // 5️⃣ Create an Order with OrderItems
     await prisma.order.create({
       data: {
         customerId: customer.id,
+        orderId: orderIdValue,
         orderTypeId: daily.id,
-        status: "new",
         orderItems: {
           create: [
             { menuId: lemangXL.id, quantity: 2 },
             { menuId: lemangL.id, quantity: 1 },
           ],
         },
+        orderStatus:{
+          create: [
+            { status: statusEnum.NEW },
+            { status: statusEnum.PROCESSED },
+            { status: statusEnum.READY_TO_PICKUP },
+            { status: statusEnum.COMPLETED }
+          ]
+        }
       },
     });
+
+   
   }
 
   console.log("✅ Seeding complete!");
