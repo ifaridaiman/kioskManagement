@@ -5,65 +5,88 @@ const prisma = new PrismaClient();
 export async function POST(req: Request): Promise<Response> {
     try {
         const body = await req.json();
-        const { orderId } = body;
+        const { phoneNumber } = body;
 
         // Validate required fields
-        if (!orderId) {
+        if (!phoneNumber) {
             return new Response(
-                JSON.stringify({ error: "Order ID is required." }),
+                JSON.stringify({ error: "Phone Number is required." }),
                 { status: 400 }
             );
         }
 
-        // Find order by orderId and include related customer, order status, and order items
-        const order = await prisma.order.findUnique({
-            where: { orderId },
+        // Find customer by phoneNumber and include related orders, order status, and order items
+        const customer = await prisma.customer.findFirst({
+            where: { phoneNumber },
             include: {
-                customer: true,
-                orderStatus: {
-                    select: {
-                        status: true,
-                        createdAt: true,
-                    }
+                orders: {
+                    include: {
+                        orderStatus: {
+                            orderBy: {
+                                createdAt: 'desc'
+                            },
+                            take: 1
+                        },
+                        orderItems: {
+                            include: {
+                                menu: true,
+                            },
+                        },
+                    },
                 },
-                orderItems: {
-                    select: {
-                        quantity: true,
-                        menu: {
-                            select: {
-                                title: true,
-                                price: true,
-                            }
-                        }
-                    }
-                }
             },
         });
 
-        if (!order) {
+        if (!customer || customer.orders.length === 0) {
             return new Response(
                 JSON.stringify({ error: "Order not found." }),
                 { status: 404 }
             );
         }
 
+        const orders = customer.orders;
+
+        // Separate orders into active orders and history (completed orders)
+        const activeOrders = orders.filter(order => 
+            order.orderStatus[0].status !== 'COMPLETED'
+        );
+        const historyOrders = orders.filter(order => 
+            order.orderStatus[0].status === 'COMPLETED'
+        );
+
         // Format response
         const formattedResponse = {
             data: {
-                orderId: order.orderId,
                 customer: {
-                    name: order.customer.name,
+                    name: customer.name,
                 },
-                orderStatus: order.orderStatus.map(status => ({
-                    status: status.status,
-                    createdAt: status.createdAt,
+                orders: activeOrders.map(order => ({
+                    orderId: order.orderId,
+                    orderStatus: order.orderStatus.map(status => ({
+                        status: status.status,
+                        createdAt: status.createdAt,
+                    })),
+                    orderItems: order.orderItems.map(item => ({
+                        menu: {
+                            title: item.menu.title,
+                            price: item.menu.price,
+                        },
+                        quantity: item.quantity,
+                    })),
                 })),
-                orderItems: order.orderItems.map(item => ({
-                    menu: {
-                        title: item.menu.title,
-                        price: item.menu.price,
-                    },
-                    quantity: item.quantity,
+                history: historyOrders.map(order => ({
+                    orderId: order.id,
+                    orderStatus: order.orderStatus.map(status => ({
+                        status: status.status,
+                        createdAt: status.createdAt,
+                    })),
+                    orderItems: order.orderItems.map(item => ({
+                        menu: {
+                            title: item.menu.title,
+                            price: item.menu.price,
+                        },
+                        quantity: item.quantity,
+                    })),
                 })),
             },
         };

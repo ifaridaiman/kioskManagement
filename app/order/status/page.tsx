@@ -1,19 +1,19 @@
-"use client"
+"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import Image from "next/image";
 import StatusCard from "./components/StatusCard";
 
 const OrderRaya = () => {
-  const [orderId, setOrderId] = useState("");
-   
+  const [phoneNumber, setPhoneNumber] = useState("");
+
   const [orderData, setOrderData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchOrderStatus = async () => {
-    if (!orderId.trim()) {
-      setError("Please enter a valid Order ID.");
+    if (!phoneNumber.trim()) {
+      setError("Please enter a valid phone number.");
       return;
     }
 
@@ -24,7 +24,7 @@ const OrderRaya = () => {
       const response = await fetch("/api/order/status/view", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId }),
+        body: JSON.stringify({ phoneNumber }),
       });
 
       const result = await response.json();
@@ -34,7 +34,6 @@ const OrderRaya = () => {
       }
 
       setOrderData(result.data);
-     
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {
@@ -43,7 +42,7 @@ const OrderRaya = () => {
   };
 
   return (
-    <div className="max-w-80 mx-auto flex flex-col justify-between h-screen">
+    <div className="max-w-80 mx-auto flex flex-col justify-between h-full">
       <div className="flex justify-center items-center p-4">
         {/* Logo */}
         <Image
@@ -55,26 +54,23 @@ const OrderRaya = () => {
         />
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 h-full">
         {/* Order Tracker */}
         <div>
           <label
-            htmlFor="orderId"
+            htmlFor="phoneNumber"
             className="text-base font-semibold text-gray-700 flex flex-col"
           >
-            Order ID
-            <span className="text-xs font-medium text-blue-400">
-              * You can get it from the receipt you received
-            </span>
+            Phone Number
           </label>
 
           <div className="flex gap-2 mt-2">
             <input
               type="text"
-              id="orderId"
-              name="orderId"
-              value={orderId}
-              onChange={(e) => setOrderId(e.target.value)}
+              id="phoneNumber"
+              name="phoneNumber"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
               className="px-4 h-11 text-base border block w-full rounded-md border-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               required
             />
@@ -93,18 +89,57 @@ const OrderRaya = () => {
 
         {/* Display Order Status */}
         {orderData && (
-          <div className="mt-4">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Order Status for {orderData.orderId}
-            </h2>
-            <p className="text-gray-600 text-sm">Customer: {orderData.customer.name}</p>
-
-            <div className="mt-2 space-y-2">
-              {orderData.orderStatus.map((status: any, index: number) => (
-                <StatusCard key={index} status={status.status} description={`Updated at: ${new Date(status.createdAt).toLocaleString()}`} />
-              ))}
+          <>
+            <div>
+              <p>Order</p>
+              <hr className="border border-gray-700" />
             </div>
-          </div>
+
+            <div className="mt-4">
+              <div className="mt-2 space-y-2">
+                {orderData.orders.map((order: any, index: number) => (
+                  <div key={index}>
+                    {order.orderStatus.map((status: any, idx: number) => (
+                      <StatusCard
+                        key={idx}
+                        status={status.status}
+                        description={`Updated at: ${new Date(
+                          status.createdAt
+                        ).toLocaleString()}`}
+                        order={order.orderItems}
+                        orderId={order.orderId}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p>History</p>
+              <hr className="border border-gray-700" />
+            </div>
+
+            <div className="mt-4">
+              <div className="mt-2 space-y-2">
+                {orderData.history.map((order: any, index: number) => (
+                  <div key={index}>
+                    {order.orderStatus.map((status: any, idx: number) => (
+                      <StatusCard
+                        key={idx}
+                        status={status.status}
+                        description={`Updated at: ${new Date(
+                          status.createdAt
+                        ).toLocaleString()}`}
+                        order={order.orderItems}
+                        orderId={order.orderId}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
         )}
       </div>
 
