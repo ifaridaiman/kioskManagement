@@ -20,6 +20,8 @@ const OrderRaya = () => {
     setLoading(true);
     setError(null);
 
+    setOrderData(null);
+
     try {
       const response = await fetch("/api/order/status/view", {
         method: "POST",
@@ -42,12 +44,12 @@ const OrderRaya = () => {
   };
 
   return (
-    <div className="max-w-80 mx-auto flex flex-col justify-between h-full md:border md:p-4 md:m-4 rounded-md">
+    <div className="max-w-80 mx-auto flex flex-col justify-between h-full md:border md:p-4 md:my-4 rounded-md">
       <div className="flex justify-center items-center p-4">
         {/* Logo */}
         <Image
           className="rounded-full border border-black"
-          src={"/assets/logo/static/lemangtul_logo.jpeg"}
+          src={"/assets/logo/static/lemangtul_logo.svg"}
           height={100}
           width={100}
           alt="LE-MANGTUL"

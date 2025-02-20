@@ -6,7 +6,7 @@ export default function Home() {
     <div className="max-w-80 mx-auto flex flex-col justify-between h-screen">
       <div className="flex justify-center items-center p-4">
         {/* logo */}
-        <Image className="rounded-full border border-black" src={"/assets/logo/static/lemangtul_logo.jpeg"} height={100} width={100}  alt="LE-MANGTUL"/>
+        <Image className="" src={"/assets/logo/static/lemangtul_logo.svg"} height={100} width={100}  alt="LE-MANGTUL"/>
       </div>
       <div className="flex flex-col justify-top items-center gap-4">
         {/* Choice of Order */}
