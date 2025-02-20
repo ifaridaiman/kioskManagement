@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import StatusCard from "./components/StatusCard";
+import FullPageLoader from "@/components/Loader/FullPageLoader";
 
 const OrderRaya = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -84,7 +85,7 @@ const OrderRaya = () => {
               {loading ? "Loading..." : "Track"}
             </button>
           </div>
-
+          {loading && <FullPageLoader/>}
           {/* Error Message */}
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         </div>
