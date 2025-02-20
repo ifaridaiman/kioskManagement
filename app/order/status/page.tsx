@@ -42,7 +42,7 @@ const OrderRaya = () => {
   };
 
   return (
-    <div className="max-w-80 mx-auto flex flex-col justify-between h-full">
+    <div className="max-w-80 mx-auto flex flex-col justify-between h-full md:border md:p-4 md:m-4 rounded-md">
       <div className="flex justify-center items-center p-4">
         {/* Logo */}
         <Image
