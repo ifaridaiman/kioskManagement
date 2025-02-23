@@ -22,12 +22,11 @@ const StatusCard: React.FC<StatusCardProps> = ({
 
   return (
     <div
-      className="border border-gray-200 shadow-lg rounded-md py-2 px-4"
+      className="border border-gray-200 bg-white shadow-lg rounded-md py-2 px-4"
       onClick={toggleCollapse}
     >
       <div className="flex justify-between items-center gap-4 cursor-pointer">
         <div className="flex gap-4">
-          <div className="rounded-full bg-black w-5 h-5 p-4"></div>
           <div>
             <p className="text-base font-bold text-gray-900">{orderId}</p>
             <p className="text-sm font-light text-gray-400">{description}</p>

@@ -10,6 +10,7 @@ export async function GET(req: Request): Promise<Response> {
         const limitParam = url.searchParams.get("limit") || "10";
         const orderIdFilter = url.searchParams.get("orderId") || "";
         const orderTypeFilter = url.searchParams.get("orderType");
+        const statusFilter = url.searchParams.get("status");
 
         const page = parseInt(pageParam, 10);
         const limit = parseInt(limitParam, 10);
@@ -27,6 +28,17 @@ export async function GET(req: Request): Promise<Response> {
             filterOptions.orderTypeId = Number(orderTypeFilter);
         }
 
+        // Modify filter options to filter by status
+        if (statusFilter) {
+            filterOptions.orderStatus = {
+                some: {
+                    status: { equals: statusFilter },
+                },
+            };
+        }
+
+        // Log the filter options for debugging
+        console.log("Filter Options:", filterOptions);
 
         // Fetch filtered and paginated orders
         const orders = await prisma.order.findMany({
