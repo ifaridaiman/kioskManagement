@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import MenuCard from "../components/MenuCard";
+import MenuCard from "./components/MenuCard";
 import Link from "next/link";
 import { BsArrowLeft } from "react-icons/bs";
+import TabsContainer from "@/components/Tabs/TabsContainer";
 
 interface MenuItem {
   name: string;
@@ -14,14 +15,7 @@ const menuItems: MenuItem[] = [
   { name: "Lemang L", price: 2.5 },
   { name: "Lemang M", price: 2.5 },
   { name: "Serunding", price: 5.5 },
-  { name: "Lemang M", price: 2.5 },
-  { name: "Serunding", price: 5.5 },
-  { name: "Lemang M", price: 2.5 },
-  { name: "Serunding", price: 5.5 },
-  { name: "Lemang M", price: 2.5 },
-  { name: "Serunding", price: 5.5 },
-  { name: "Lemang M", price: 2.5 },
-  { name: "Serunding", price: 5.5 },
+
   // Add more menu items as needed
 ];
 
@@ -44,10 +38,42 @@ const OrderDaily: React.FC = () => {
       .toFixed(2);
   };
 
+  const tabs = [
+    {
+      label: "Daily",
+      content: (
+        <div className="flex-1 overflow-auto">
+          <div className="grid grid-cols-1 gap-2">
+            <p className="text-black font-bold text-xl">Lemang</p>
+            {menuItems.map((item) => {
+              return (
+                <MenuCard
+                  key={item.name}
+                  name={item.name}
+                  price={`RM ${item.price.toFixed(2)}`}
+                  onClick={() => handleCardClick(item.name)}
+                  count={counts[item.name] || 0}
+                />
+              );
+            })}
+          </div>
+        </div>
+      ),
+    },
+    {
+      label: "Raya Order",
+      content: <div>Raya Order Content</div>,
+    },
+    {
+      label: "Special Order",
+      content: <div>Special Order Content</div>,
+    },
+  ];
+
   return (
     <div className="flex flex-col h-screen">
       {/* Header Section */}
-      <div className="sticky top-0 z-10 bg-white w-full px-8 pt-4 flex flex-col items-start">
+      {/* <div className="sticky top-0 z-10 bg-white w-full px-8 pt-4 flex flex-col items-start">
         <p className="font-bold text-xl text-black">Daily Order</p>
         <Link
           className="text-base text-gray-800 font-medium flex justify-center items-center gap-2 mt-3"
@@ -55,25 +81,12 @@ const OrderDaily: React.FC = () => {
         >
           <BsArrowLeft /> Back to order type selection
         </Link>
-      </div>
-      
+      </div> */}
+
       {/* Menu Cards Section */}
-      <div className="flex-1 overflow-auto px-8 pt-4">
-        <div className="grid grid-cols-2 gap-4">
-          {menuItems.map((item) => {
-            return (
-              <MenuCard
-                key={item.name}
-                name={item.name}
-                price={`RM ${item.price.toFixed(2)}`}
-                onClick={() => handleCardClick(item.name)}
-                count={counts[item.name] || 0}
-              />
-            );
-          })}
-        </div>
-      </div>
-      
+
+      <TabsContainer tabs={tabs} />
+
       {/* Basket Section */}
       <div className="sticky bottom-0 z-10 bg-white w-full border-t px-8 py-4">
         <button className="bg-primary text-white p-4 rounded-xl flex justify-between items-center w-full">

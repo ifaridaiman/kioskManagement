@@ -7,7 +7,7 @@ const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     
         <div className="bg-slate-50 h-screen">
           <NavbarCustomer />
-          <div className="min-w-80 max-w-7xl mx-auto ">{children}</div>
+          <div className="min-w-80 max-w-96 mx-auto ">{children}</div>
         </div>
   );
 };
