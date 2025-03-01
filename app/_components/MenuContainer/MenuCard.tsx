@@ -85,7 +85,7 @@ const MenuDetail: React.FC<MenuDetailProps> = ({ name, description, price, image
   const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   return (
-    <div className="fixed inset-0 bg-white flex flex-col z-50">
+    <div className="fixed inset-0 bg-white flex flex-col z-50 md:max-w-96 md:mx-auto">
       {/* Top Section - Image & Back Button */}
       <div className="relative">
         <button className="absolute top-4 left-4 bg-white rounded-full p-2 shadow-md" onClick={onClose}>

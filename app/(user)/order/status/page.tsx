@@ -45,7 +45,7 @@ const OrderRaya: React.FC = () => {
 
   return (
     <div className="bg-primary min-h-[90vh] flex flex-col">
-      <div className="max-w-80 mx-auto flex flex-col justify-between flex-grow md:border md:p-4 md:my-4 rounded-md">
+      <div className="max-w-80 mx-auto flex flex-col justify-between flex-grow md:my-4 rounded-md">
         <div className="flex justify-start items-start pt-8 pb-4">
           {/* Logo */}
           <p className="text-white font-bold text-xl">Order Tracker</p>
