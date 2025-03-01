@@ -1,86 +1,71 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 import MenuContainer from "@/app/_components/MenuContainer";
 import TabsContainer from "@/components/Tabs/TabsContainer";
-import FullPageLoader from "@/components/Loader/FullPageLoader";
-
-interface MenuItem {
-  name: string;
-  price: number;
-}
-
-const menuItems: MenuItem[] = [
-  { name: "Lemang XL", price: 2.5 },
-  { name: "Lemang L", price: 2.5 },
-  { name: "Lemang M", price: 2.5 },
-  { name: "Serunding", price: 5.5 },
-
-  // Add more menu items as needed
-];
+import Link from "next/link";
+// import FullPageLoader from "@/components/Loader/FullPageLoader";
 
 const OrderDaily: React.FC = () => {
   
+  // Calculate total item count
+  const orderCount = useSelector((state: RootState) =>
+    state.order.orders.reduce((total, order) => total + order.quantity, 0)
+  );
+
+  // Calculate total RM (price × quantity)
+  const totalPrice = useSelector((state: RootState) =>
+    state.order.orders.reduce((total, order) => total + order.price * order.quantity, 0)
+  );
+
+  const mockMenus = [
+    { id:"abs123",name: "Lemang XL", price: 2.5, stocks: 0 },
+    { id:"abs124",name: "Lemang L", price: 2.5, stocks: 10 },
+    { id:"abs125",name: "Lemang M", price: 2.5, stocks: 10 },
+    { id:"abs126",name: "Serunding", price: 5.5, stocks: 10 },
+  ];
+
   const tabs = [
     {
       label: "Daily",
       content: (
         <div className="flex-1 overflow-auto">
           <div className="grid grid-cols-1 gap-2">
-            <MenuContainer slug="Lemang" menus={menuItems} />
+            <MenuContainer slug="Lemang" menus={mockMenus} />
           </div>
         </div>
       ),
-      description: "This order will be closed at 3.00Pm everyday. after r.00 PM order will be consider as tomorrow order",
+      description: "This order will be closed at 3.00PM everyday.",
     },
     {
-      label: "Raya Order",
-      content: <div>Raya Order Content</div>,
-      description: "Raya Order Content",
-    },
-    {
-      label: "Special Order",
-      content: <div>Special Order Content</div>,
-      description: "Special Order Content"
+      label: "Raya",
+      content: (
+        <div className="flex-1 overflow-auto">
+          <div className="grid grid-cols-1 gap-2">
+            <MenuContainer slug="Lemang" menus={mockMenus} />
+          </div>
+        </div>
+      ),
+      description: "This order will be closed at 3.00PM everyday.",
     },
   ];
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const userId = localStorage.getItem("user_id");
-    if (!userId) {
-      setTimeout(() => {
-        const newUserId = Math.random().toString(36).substr(2, 9);
-        localStorage.setItem("user_id", newUserId);
-        setLoading(false);
-      }, 2000);
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  if (loading) {
-    return <FullPageLoader />;
-  }
 
   return (
     <div className="md:max-w-80 mx-auto">
       <div className="flex flex-col h-screen">
-        
-
         <TabsContainer tabs={tabs} />
-
         {/* Basket Section */}
         <div className="sticky bottom-0 z-10 bg-white w-full border-t px-4 py-4">
-          <button className="bg-primary text-white p-4 rounded-xl flex justify-between items-center w-full">
+          <Link href={'/order/customer-detail'} className="bg-primary text-white p-4 rounded-xl flex justify-between items-center w-full">
             <div className="flex justify-center items-center">
               <span className="font-bold">Basket</span>
-              <span className="ml-2 text-white p-1 rounded-full">
-                {/* {Object.keys(counts).length} items */}
-              </span>
+              <span className="ml-2 text-white p-1 rounded-full">{orderCount} items</span>
             </div>
-            {/* <span>RM {calculateTotalPrice()}</span> */}
-          </button>
+            <span className="font-bold">
+              RM {totalPrice.toFixed(2)} 
+            </span>
+          </Link>
         </div>
       </div>
     </div>
