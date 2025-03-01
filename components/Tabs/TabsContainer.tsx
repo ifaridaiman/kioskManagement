@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 interface Tab {
   label: string;
+  description: string;
   content: React.ReactNode;
 }
 
@@ -13,9 +14,12 @@ interface TabsContainerProps {
 const TabsContainer: React.FC<TabsContainerProps> = ({ tabs }) => {
   const [activeTab, setActiveTab] = useState(tabs[0].label);
 
+  // Find the active tab's details
+  const activeTabDetails = tabs.find((tab) => tab.label === activeTab);
+
   return (
     <div>
-      <div className="flex border-b border-gray-200">
+      <div className="flex border-b border-gray-200 sticky top-0 z-10 bg-white">
         {tabs.map((tab) => (
           <button
             key={tab.label}
@@ -31,13 +35,12 @@ const TabsContainer: React.FC<TabsContainerProps> = ({ tabs }) => {
         ))}
       </div>
 
-      <div className="mt-4">
-        {tabs.map(
-          (tab) =>
-            activeTab === tab.label && (
-              <div key={tab.label}>{tab.content}</div>
-            )
-        )}
+      <div className="mt-4 px-4 h-full min-h-screen">
+        {/* Display description of the active tab */}
+        {activeTabDetails && <p className="text-gray-600 text-xs mb-4">{activeTabDetails.description}</p>}
+        
+        {/* Display content of the active tab */}
+        {activeTabDetails && <div>{activeTabDetails.content}</div>}
       </div>
     </div>
   );
