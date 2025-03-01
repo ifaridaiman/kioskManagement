@@ -66,18 +66,7 @@ const OrderDaily: React.FC = () => {
   return (
     <div className="md:max-w-80 mx-auto">
       <div className="flex flex-col h-screen">
-        {/* Header Section */}
-        {/* <div className="sticky top-0 z-10 bg-white w-full px-8 pt-4 flex flex-col items-start">
-        <p className="font-bold text-xl text-black">Daily Order</p>
-        <Link
-          className="text-base text-gray-800 font-medium flex justify-center items-center gap-2 mt-3"
-          href={"/"}
-        >
-          <BsArrowLeft /> Back to order type selection
-        </Link>
-      </div> */}
-
-        {/* Menu Cards Section */}
+        
 
         <TabsContainer tabs={tabs} />
 

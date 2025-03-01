@@ -27,19 +27,6 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ slug, menus }) => {
           />
         );
       })}
-
-      {/* {menus.map((item) => {
-              return (
-                <MenuCard
-                  key={item.name}
-                  name={item.name}
-                  price={`RM ${item.price.toFixed(2)}`}
-                  // onClick={() => handleCardClick(item.name)}
-                  count={counts[item.name] || 0}\
-                  stocks={10}
-                />
-              );
-            })} */}
     </div>
   );
 };
