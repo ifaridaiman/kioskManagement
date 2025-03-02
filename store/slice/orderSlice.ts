@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
+import { RootState } from "@/store/store";
 interface MenuItem {
     id: string;
     name: string;
@@ -69,3 +69,7 @@ const orderSlice = createSlice({
 
 export const { addOrder, updateQuantity, removeOrder, updateCustomerDetails, clearOrder } = orderSlice.actions;
 export default orderSlice.reducer;
+export const selectFullOrder = (state: RootState) => ({
+    orders: state.order.orders,
+    customerDetails: state.order.customerDetails,
+});
