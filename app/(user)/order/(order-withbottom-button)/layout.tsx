@@ -1,7 +1,7 @@
 "use client";
 import NavbarCustomer from "@/components/Navbar/NavbarCustomer";
 import React from "react";
-import TotalButton from "./order/customer-detail/components/TotalButton";
+import TotalButton from "../customer-detail/components/TotalButton";
 const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
     

@@ -5,9 +5,11 @@ import { RootState } from "@/store/store";
 import { updateCustomerDetails } from "@/store/slice/orderSlice";
 import Link from "next/link";
 import { BsArrowLeft } from "react-icons/bs";
+import { useRouter } from "next/navigation";
 
 const CustomerDetail = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // Get existing customer details from Redux state
   const existingDetails = useSelector(
@@ -51,6 +53,8 @@ const CustomerDetail = () => {
   // Dispatch update to Redux store
   const handleUpdateCustomerDetails = () => {
     dispatch(updateCustomerDetails(customer));
+    
+    router.push("/order/summary");
   };
 
   return (

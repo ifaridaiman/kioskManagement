@@ -18,6 +18,7 @@ interface CustomerDetails {
 }
 
 interface OrderState {
+    type: "raya" | "bulk" | "daily";
     orders: MenuItem[];
     customerDetails: CustomerDetails | null;
 }
