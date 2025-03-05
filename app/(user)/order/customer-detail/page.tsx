@@ -24,6 +24,7 @@ const CustomerDetail = () => {
     email: string;
     deliveryMethod: "pickup" | "delivery";
     paymentMethod: "cod" | "online";
+    remarks: string;
   }>({
     name: "",
     address: "",
@@ -31,6 +32,7 @@ const CustomerDetail = () => {
     email: "",
     deliveryMethod: "delivery",
     paymentMethod: "cod",
+    remarks: "",
   });
 
   // Fill form fields if existing details are available
@@ -119,6 +121,18 @@ const CustomerDetail = () => {
               className="border border-gray-400 rounded p-2 mt-2"
               placeholder="Enter Address"
               value={customer.address}
+              onChange={handleChange}
+            ></textarea>
+          </div>
+        </div>
+        <div className="mt-4">
+          <div className="flex flex-col">
+            <label>Remarks</label>
+            <textarea
+              name="remarks"
+              className="border border-gray-400 rounded p-2 mt-2"
+              placeholder="Enter Address"
+              value={customer.remarks}
               onChange={handleChange}
             ></textarea>
           </div>

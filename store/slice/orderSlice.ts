@@ -15,6 +15,7 @@ interface CustomerDetails {
     email: string;
     deliveryMethod: "pickup" | "delivery";
     paymentMethod: "cod" | "online";
+    remarks: string;
 }
 
 interface OrderState {
@@ -24,6 +25,7 @@ interface OrderState {
 }
 
 const initialState: OrderState = {
+    type: "daily", // or "raya" or "bulk" depending on your default
     orders: [],
     customerDetails: null,
 };

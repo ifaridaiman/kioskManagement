@@ -21,7 +21,7 @@ const OrderDaily: React.FC = () => {
 
   const mockMenus = [
     { id:"abs123",name: "Lemang XL", price: 2.5, stocks: 0 },
-    { id:"abs124",name: "Lemang L", price: 2.5, stocks: 10 },
+    { id:"abs124",name: "Lemang L", price: 2.5, stocks: 5 },
     { id:"abs125",name: "Lemang M", price: 2.5, stocks: 10 },
     { id:"abs126",name: "Serunding", price: 5.5, stocks: 10 },
   ];
