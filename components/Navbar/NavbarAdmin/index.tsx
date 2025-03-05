@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { UserButton } from "@clerk/nextjs";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -38,7 +39,7 @@ const NavbarAdmin = () => {
 
   return (
     <nav className="block z-50 shadow-sm bg-slate-50">
-      <div className="flex justify-between items-center max-w-7xl mx-auto py-6">
+      <div className="flex justify-between items-center px-4 py-3">
         <Link href="/" className="font-bold text-xl">
           Kiosk Manager
         </Link>
@@ -56,6 +57,7 @@ const NavbarAdmin = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex gap-4">
           <NavLinks />
+          <UserButton />
         </div>
       </div>
     </nav>

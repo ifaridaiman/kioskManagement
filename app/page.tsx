@@ -28,6 +28,7 @@ const OrderDaily: React.FC = () => {
 
   const tabs = [
     {
+      id: "d1f5e8b0-8f4b-4b2e-9f1e-1c2d3e4f5g6h",
       label: "Daily",
       content: (
         <div className="flex-1 overflow-auto">
@@ -39,6 +40,7 @@ const OrderDaily: React.FC = () => {
       description: "This order will be closed at 3.00PM everyday.",
     },
     {
+      id: "d1f5e8b0-8f4b-4b2e-9f1e-1c2d3e4f5g6i",
       label: "Raya",
       content: (
         <div className="flex-1 overflow-auto">
@@ -57,7 +59,7 @@ const OrderDaily: React.FC = () => {
         <TabsContainer tabs={tabs} />
         {/* Basket Section */}
         <div className="sticky bottom-0 z-10 bg-white w-full border-t px-4 py-4">
-          <Link href={'/order/customer-detail'} className="bg-primary text-white p-4 rounded-xl flex justify-between items-center w-full">
+          <Link href={'/order/customer-detail'} className={`bg-primary text-white p-4 rounded-xl flex justify-between items-center w-full ${orderCount === 0 ? 'pointer-events-none opacity-50' : ''}`}>
             <div className="flex justify-center items-center">
               <span className="font-bold">Basket</span>
               <span className="ml-2 text-white p-1 rounded-full">{orderCount} items</span>

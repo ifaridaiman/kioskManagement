@@ -117,7 +117,7 @@ const MenuDetail: React.FC<MenuDetailProps> = ({
   const increaseQuantity = () => {
     if (count < stocks) {
       if(count === 0) {
-        dispatch(addOrder({ id, name, price, quantity: 1, type: "daily" }));
+        dispatch(addOrder({ id, name, price, quantity: 1 }));
       }else{
         dispatch(updateQuantity({ id, quantity: count + 1 }));
       }

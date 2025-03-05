@@ -5,7 +5,6 @@ interface MenuItem {
     name: string;
     quantity: number;
     price: number;
-    type: "raya" | "bulk" | "daily";
 }
 
 interface CustomerDetails {
@@ -19,13 +18,13 @@ interface CustomerDetails {
 }
 
 interface OrderState {
-    type: "raya" | "bulk" | "daily";
+    type: string;
     orders: MenuItem[];
     customerDetails: CustomerDetails | null;
 }
 
 const initialState: OrderState = {
-    type: "daily", // or "raya" or "bulk" depending on your default
+    type: "", // or "raya" or "bulk" depending on your default
     orders: [],
     customerDetails: null,
 };
@@ -34,6 +33,10 @@ const orderSlice = createSlice({
     name: "order",
     initialState,
     reducers: {
+
+        updateOrderType: (state, action: PayloadAction<string>) => {
+            state.type = action.payload;
+        },
         addOrder: (state, action: PayloadAction<MenuItem>) => {
             const existingOrder = state.orders.find((order) => order.id === action.payload.id);
             if (existingOrder) {
@@ -70,7 +73,7 @@ const orderSlice = createSlice({
     },
 });
 
-export const { addOrder, updateQuantity, removeOrder, updateCustomerDetails, clearOrder } = orderSlice.actions;
+export const { addOrder, updateQuantity, removeOrder, updateCustomerDetails, clearOrder, updateOrderType } = orderSlice.actions;
 export default orderSlice.reducer;
 export const selectFullOrder = (state: RootState) => ({
     orders: state.order.orders,
