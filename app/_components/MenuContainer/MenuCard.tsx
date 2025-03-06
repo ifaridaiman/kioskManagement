@@ -59,7 +59,7 @@ const MenuCard: React.FC<MenuCardProps> = ({ id, name, price, stocks }) => {
                 <GoPlusCircle
                   className="w-6 h-6 text-primary"
                   onClick={() =>
-                    dispatch(addOrder({ id, name, price, quantity: 1, type: "daily" }))
+                    dispatch(addOrder({ id, name, price, quantity: 1 }))
                   }
                 />
               )}
@@ -134,9 +134,7 @@ const MenuDetail: React.FC<MenuDetailProps> = ({
   };
 
   const handleAddToBasket = () => {
-    // if (count > 0) {
-    //   dispatch(addOrder({ id, name, price, quantity: count, type: "daily" }));
-    // }
+  
     onClose();
   };
 

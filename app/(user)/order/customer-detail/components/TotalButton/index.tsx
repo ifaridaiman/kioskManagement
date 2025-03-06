@@ -52,7 +52,7 @@ const TotalButton: React.FC = () => {
           disabled={loading}
           className={`block w-full text-center bg-primary text-white py-4 rounded-lg font-semibold ${loading ? "opacity-50" : ""}`}
         >
-          {loading ? "Processing..." : "Place Order"}
+          {loading ? "Processing..." : "Make Payment"}
         </button>
       </div>
     </div>
