@@ -16,7 +16,9 @@ interface MenuCardProps {
   quantity: number;
 }
 
+
 const MenuCard: React.FC<MenuCardProps> = ({ id, name, price, stocks }) => {
+  console.log(`Rendering MenuCard: ${name}, Price: ${price}, Stocks: ${stocks}`);
   const [openDetail, setOpenDetail] = useState(false);
   const dispatch = useDispatch();
   const order = useSelector((state: RootState) => state.order.orders.find((order) => order.id === id));

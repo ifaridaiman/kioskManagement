@@ -1,43 +1,44 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import MenuCard from "./MenuCard";
 import { RootState } from "@/store/store";
-
-interface MenuItem {
-  id: string;
-  name: string;
-  price: number;
-  stocks: number;
-}
+import { MenuCategory, MenuItem } from "@/types/menuCategory";
 
 interface MenuContainerProps {
-  slug: string;
-  menus: MenuItem[];
+  typeId: string;
+  menus: MenuCategory[];
 }
 
-const MenuContainer: React.FC<MenuContainerProps> = ({ slug, menus }) => {
+const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
   // Get orders from Redux state
   const orders = useSelector((state: RootState) => state.order.orders);
 
+  useEffect(() => {
+    console.log("MenuContainer Orders:", menus);
+  }, [menus]);
+
   return (
-    <div>
-      <p className="text-black font-bold text-xl">{slug}</p>
-
+    <div key={typeId}>
       {menus.map((item) => {
-        // Find the order for the specific item
-        const order = orders.find((order) => order.id === item.id);
-        const count = order ? order.quantity : 0; // Default to 0 if item is not in the cart
-
+        // const order = orders.find((order) => order.id === item.id);
+        // const count = order ? order.quantity : 0; // Default to 0 if item is not in the cart
         return (
-          <MenuCard
-            key={item.id}
-            id={item.id}
-            name={item.name}
-            price={item.price}
-            stocks={item.stocks}
-            quantity={count} // ✅ Pass quantity dynamically
-          />
+          <div key={item.id} className="mb-8">
+            <p className="text-black font-bold text-xl">{item.title}</p>
+            {item.menus.map((menu: MenuItem) => (
+              <MenuCard
+                key={menu.id}
+                id={menu.id}
+                name={menu.title} // ✅ API uses "title"
+                price={parseFloat(menu.price)}
+                stocks={menu.inventory?.[0]?.quantity || 0}
+                quantity={
+                  orders.find((order) => order.id === menu.id)?.quantity || 0
+                }
+              />
+            ))}
+          </div>
         );
       })}
     </div>
