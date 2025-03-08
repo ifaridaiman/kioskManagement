@@ -5,6 +5,8 @@ import MenuAdd from "./_components/MenuAdd";
 import { useMenuMaker } from "./context/MenuMakerContext";
 import HeaderTop from "@/components/Header/Top";
 import MenuUpdate from "./_components/MenuUpdate";
+import { useCategoryMaker } from "./context/CategoryMakerContext";
+import CategoryAdd from "./_components/CategoryAdd";
 
 interface MenuMaker {
   title: string;
@@ -21,6 +23,11 @@ interface MenuItem {
 const MenuMaker = () => {
   const { toggleShowAddMenuModal, showAddMenu, showUpdateMenuModal } =
     useMenuMaker();
+  const {
+    toggleShowAddCategoryModal,
+    showAddCategory,
+    // showUpdateCategoryModal,
+  } = useCategoryMaker();
 
   // State to store selected menu for updating
   const [selectedMenu, setSelectedMenu] = useState<MenuItem | null>(null);
@@ -36,11 +43,19 @@ const MenuMaker = () => {
           title="Menu Manager"
           description="Adding your menu and price "
         >
-          <div
-            className="border-2 border-gray-300 text-gray-900 px-3 py-2 rounded-md"
-            onClick={toggleShowAddMenuModal}
-          >
-            Add New Menu
+          <div className="flex space-x-4">
+            <div
+              className="border-2 border-gray-300 text-gray-900 px-3 py-2 rounded-md"
+              onClick={toggleShowAddCategoryModal}
+            >
+              Add New Category
+            </div>
+            <div
+              className="border-2 border-gray-300 text-gray-900 px-3 py-2 rounded-md"
+              onClick={toggleShowAddMenuModal}
+            >
+              Add New Menu
+            </div>
           </div>
         </HeaderTop>
         <hr className="" />
@@ -55,6 +70,7 @@ const MenuMaker = () => {
           price={selectedMenu.price}
         />
       )}
+      {showAddCategory && <CategoryAdd />}
     </>
   );
 };

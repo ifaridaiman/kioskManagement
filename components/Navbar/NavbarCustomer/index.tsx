@@ -17,7 +17,7 @@ const NavbarCustomer = () => {
   return (
     <div className={`sticky top-0 z-50 bg-white`}>
       <div
-        className="flex justify-between items-center max-w-96 mx-auto  top-0"
+        className="flex justify-between items-center max-w-96 mx-auto  top-0 pl-2 px-4"
         style={{ transition: "background-color 0.3s ease" }}
       >
         <Link href={"/"}>

@@ -19,12 +19,14 @@ interface CustomerDetails {
 
 interface OrderState {
     type: string;
+    description: string;
     orders: MenuItem[];
     customerDetails: CustomerDetails | null;
 }
 
 const initialState: OrderState = {
     type: "", // or "raya" or "bulk" depending on your default
+    description: "",
     orders: [],
     customerDetails: null,
 };
@@ -44,6 +46,10 @@ const orderSlice = createSlice({
             } else {
                 state.orders.push(action.payload);
             }
+
+            state.description = state.orders
+                .map(order => `${order.name} (x${order.quantity})`)
+                .join(", ");
         },
 
         updateQuantity: (state, action: PayloadAction<{ id: string; quantity: number }>) => {
@@ -55,11 +61,18 @@ const orderSlice = createSlice({
                     state.orders[orderIndex].quantity = action.payload.quantity;
                 }
             }
+
+            state.description = state.orders
+                .map(order => `${order.name} (x${order.quantity})`)
+                .join(", ");
         },
 
 
         removeOrder: (state, action: PayloadAction<string>) => {
             state.orders = state.orders.filter((order) => order.id !== action.payload);
+            state.description = state.orders
+                .map(order => `${order.name} (x${order.quantity})`)
+                .join(", ");
         },
 
         updateCustomerDetails: (state, action: PayloadAction<OrderState["customerDetails"]>) => {
@@ -69,6 +82,7 @@ const orderSlice = createSlice({
         clearOrder: (state) => {
             state.orders = [];
             state.customerDetails = null;
+            state.description = "";
         },
     },
 });
@@ -78,4 +92,5 @@ export default orderSlice.reducer;
 export const selectFullOrder = (state: RootState) => ({
     orders: state.order.orders,
     customerDetails: state.order.customerDetails,
+    description: state.order.description
 });

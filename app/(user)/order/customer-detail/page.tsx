@@ -140,7 +140,7 @@ const CustomerDetail: React.FC = () => {
             className="border border-gray-400 rounded p-2 mt-2"
           >
             <option value="online">Online Payment</option>
-            <option value="cod">Cash</option>
+            {/* <option value="cod">Cash</option> */}
           </select>
         </div>
 
