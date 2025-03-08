@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/', '/coming-soon','/order(.*)','/customer-detail'])
+const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/', '/coming-soon','/order(.*)','/customer-detail','/receipt/(.*)'])
 const isAdminRoute = createRouteMatcher(['/dashboard','/menu-editor','/order-list','/inventory(.*)'])
 const isStaffRoute = createRouteMatcher(['/kiosk-order'])
 
