@@ -38,13 +38,14 @@ const TotalButton: React.FC = () => {
 
       const data = await response.json(); // Parse JSON response
       if (data?.bill?.url) {
-        window.open(data.bill.url, "_blank"); // Open payment page in new tab
+        console.log("Payment URL: ", data.bill.url);
+        window.open(data.bill.url, "_self"); // Open payment page in same tab
       } else {
         throw new Error("Payment URL not found.");
       }
 
       // Redirect to summary page after successful order placement
-      // window.location.href = "/order/summary";
+      // window.location.href = data.bill.url
     } catch (err) {
       setError((err as Error).message);
     } finally {
