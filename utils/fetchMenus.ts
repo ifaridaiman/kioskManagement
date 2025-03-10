@@ -17,7 +17,7 @@ export interface MenuItem {
   
   export const fetchMenus = async (page = 1, limit = 10, title = ""): Promise<ApiResponse> => {
     const response = await fetch(
-      `/api/menu?page=${page}&limit=${limit}&title=${encodeURIComponent(title)}`
+      `/api/menus?page=${page}&limit=${limit}&title=${encodeURIComponent(title)}`
     );
   
     if (!response.ok) {
