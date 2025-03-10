@@ -1,11 +1,24 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+
+interface CollectionResponse {
+  success: boolean;
+  data?: { id: string };
+  error?: string;
+}
+
+interface OrderResponse {
+  success: boolean;
+  bill?: { url: string };
+  error?: string;
+}
 
 const TotalButton: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [collectionId, setCollectionId] = useState<string | null>(null);
 
   // Get total RM price from Redux
   const totalPrice = useSelector((state: RootState) =>
@@ -17,12 +30,45 @@ const TotalButton: React.FC = () => {
 
   const orderDetails = useSelector((state: RootState) => state.order);
 
+  const fetchCollectionId = async () => {
+    try {
+      const response = await fetch(`/api/collection`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch collections");
+      }
+
+      const data: CollectionResponse = await response.json();
+
+      console.log("Collection ID: ", data.data?.id);
+      if (!data.success || !data.data?.id) {
+        throw new Error(data.error || "Invalid collection response");
+      }
+
+      
+
+      setCollectionId(data.data?.id);
+    } catch (error) {
+      console.error("Error fetching collections:", error);
+      setError((error as Error).message);
+    }
+  };
+
+  useEffect(() => {
+    fetchCollectionId();
+  }, []);
+
   const handlePlaceOrder = async () => {
+    if (!collectionId) {
+      setError("Collection ID is not available. Please try again.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/230f0470-f7cf-46ac-88f2-1a5bb80a925c`,
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/${collectionId}`,
         {
           method: "POST",
           headers: {
@@ -36,16 +82,16 @@ const TotalButton: React.FC = () => {
         throw new Error("Failed to process the order.");
       }
 
-      const data = await response.json(); // Parse JSON response
-      if (data?.bill?.url) {
-        console.log("Payment URL: ", data.bill.url);
-        window.open(data.bill.url, "_self"); // Open payment page in same tab
-      } else {
-        throw new Error("Payment URL not found.");
-      }
+      const data: OrderResponse = await response.json();
 
-      // Redirect to summary page after successful order placement
-      // window.location.href = data.bill.url
+      console.log("Order response: ", data.bill?.url);
+
+      if (data.bill?.url) {
+        console.log("Payment URL: ", data.bill.url);
+        window.open(data.bill.url, "_self"); // Open payment page in the same tab
+      } else {
+        throw new Error(data.error || "Payment URL not found.");
+      }
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -63,9 +109,9 @@ const TotalButton: React.FC = () => {
       <div className="px-4">
         <button
           onClick={handlePlaceOrder}
-          disabled={loading}
+          disabled={loading || !collectionId}
           className={`block w-full text-center bg-primary text-white py-4 rounded-lg font-semibold ${
-            loading ? "opacity-50" : ""
+            loading || !collectionId ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
           {loading ? "Processing..." : "Make Payment"}

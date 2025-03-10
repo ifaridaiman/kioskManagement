@@ -13,6 +13,7 @@ interface MenuState {
   title: string;
   description: string;
   price: number;
+  
 }
 
 interface MenuMakerContextProps {

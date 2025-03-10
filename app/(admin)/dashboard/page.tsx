@@ -1,4 +1,6 @@
 import React from "react";
+import CollectionList from "./partials/CollectionList";
+
 
 const Dashboard = () => {
   return (
@@ -7,6 +9,7 @@ const Dashboard = () => {
       <div className="mb-8">
         <h1 className="text-2xl text-gray-800 font-semibold">Dashboard</h1>
       </div>
+      <CollectionList/>
       <div className="border border-slate-200 rounded p-4 shadow-md shadow-slate-100 grid grid-cols-1 lg:grid-cols-4 gap-4">
         <div>
           <p className="text-base text-gray-500 font-semibold">Total order </p>

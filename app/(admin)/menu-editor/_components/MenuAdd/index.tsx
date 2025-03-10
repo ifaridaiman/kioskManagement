@@ -84,7 +84,7 @@ const MenuAdd = () => {
     <div className="w-screen h-screen flex justify-center items-center bg-black bg-opacity-10 absolute top-0 left-0">
       <div className="bg-white p-4 rounded min-w-80">
         <div className="flex items-bottom justify-between">
-          <p className="font-bold text-gray-700">Add New Menu</p>
+          <p className="font-bold text-gray-700">{ currentPage === 1 ? `Add New Menu` : `Add Inventory` }</p>
           <button onClick={toggleShowAddMenuModal}>
             <IoMdClose className="text-xl" />
           </button>
