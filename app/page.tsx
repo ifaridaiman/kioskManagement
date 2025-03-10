@@ -20,7 +20,7 @@ const OrderDaily: React.FC = () => {
     const fetchOrderTypes = async () => {
       try {
         const response = await axios.get<OrderType[]>(
-          "https://bayargate-master-wckfzq.laravel.cloud/api/orders/types"
+          `${process.env.NEXT_PUBLIC_API_URL}/orders/types`
         );
         console.log("Order Types:", response.data);
         setOrderTypes(response.data);
@@ -42,14 +42,9 @@ const OrderDaily: React.FC = () => {
     const fetchMenus = async () => {
       try {
         setIsLoadingMenus(true);
-        // const response = await axios.get<MenuCategory[]>(
-        //   `https://bayargate-master-wckfzq.laravel.cloud/api/menus?orderType=${activeTab}`
-        // );
-        // console.log(`Menus for ${activeTab}:`, response);
-        // setMenus(response.data.data); // ✅ Update menus state
 
         const response = await fetch(
-          `https://bayargate-master-wckfzq.laravel.cloud/api/menus?orderType=${activeTab}`
+          `${process.env.NEXT_PUBLIC_API_URL}/menus?orderType=${activeTab}`
         );
         
         if (!response.ok) {

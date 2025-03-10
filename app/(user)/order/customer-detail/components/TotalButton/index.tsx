@@ -22,7 +22,7 @@ const TotalButton: React.FC = () => {
     setError(null);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/0195736f-5efb-70d9-adfc-c2e05db55919`,
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/230f0470-f7cf-46ac-88f2-1a5bb80a925c`,
         {
           method: "POST",
           headers: {
