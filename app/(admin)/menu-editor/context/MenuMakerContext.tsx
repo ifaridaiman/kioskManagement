@@ -9,6 +9,7 @@ import React, {
 
 // Define the shape of the context
 interface MenuState {
+  category: string;
   title: string;
   description: string;
   price: number;
@@ -39,6 +40,7 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [state, setState] = useState<MenuState>({
+    category: "",
     title: "",
     description: "",
     price: 0,
@@ -72,7 +74,7 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
     console.log("JSON POST", JSON.stringify(state));
 
     try {
-      const response = await fetch("/api/menu/add", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(state),
@@ -117,17 +119,18 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
       console.error("Failed to update menu:", error);
       alert("An unexpected error occurred.");
     } finally {
-      setState({ title: "", description: "", price: 0 });
+      setState({ category:"",title: "", description: "", price: 0 });
     }
   };
   
   const handleClickShowUpdate = () => {
     if (showUpdateMenuModal) {
       // If toggling off, reset the state to default values
-      setState({ title: "", description: "", price: 0 });
+      setState({ category: "",title: "", description: "", price: 0 });
     } else {
       // If toggling on, prefill the form with the current card's values
       setState((prevState) => ({
+        category: prevState.category,
         title: prevState.title,
         description: prevState.description,
         price: prevState.price,
