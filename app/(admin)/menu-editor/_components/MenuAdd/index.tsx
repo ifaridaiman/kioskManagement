@@ -13,15 +13,15 @@ interface OrderType {
   name: string;
 }
 
-interface FormState {
-  category: string;
-  title: string;
-  description: string;
-  price: number;
-  order_type: string;
-  inventory_quantity: number;
-  start_date: string;
-}
+// interface FormState {
+//   category: string;
+//   title: string;
+//   description: string;
+//   price: number;
+//   order_type: string;
+//   inventory_quantity: number;
+//   start_date: string;
+// }
 
 const MenuAdd = () => {
   const { state, handleChange, toggleShowAddMenuModal, handleSubmit } = useMenuMaker();
@@ -95,7 +95,7 @@ const MenuAdd = () => {
               <div className="flex flex-col gap-4">
                 <div>
                   <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-                    Menu Category
+                    Menu Category, {orderTypes.length}
                   </label>
                   <select
                     id="category"
@@ -154,7 +154,7 @@ const MenuAdd = () => {
               </div>
             )}
 
-            {currentPage === 2 && (
+            {/* {currentPage === 2 && (
               <div className="flex flex-col gap-4">
                 <div>
                   <label htmlFor="order_type" className="block text-sm font-medium text-gray-700">
@@ -202,7 +202,7 @@ const MenuAdd = () => {
                   />
                 </div>
               </div>
-            )}
+            )} */}
 
             <div className="flex justify-between">
               {currentPage > 1 && (

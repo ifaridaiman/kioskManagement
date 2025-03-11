@@ -25,7 +25,6 @@ const OrderList = () => {
         }
 
         setOrders(result.data);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setError(err.message || "Something went wrong.");
       } finally {
