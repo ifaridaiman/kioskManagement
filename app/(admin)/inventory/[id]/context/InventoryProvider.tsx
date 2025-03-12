@@ -1,19 +1,19 @@
-import React, { ChangeEvent, ReactNode, useState } from "react";
-
+import React, { ChangeEvent, ReactNode, useState, useEffect } from "react";
 import { InventoryContext, InventoryState } from "./InventoryContext";
 
-// Provider component
 export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [showAddInventory, setShowAddInventory] = useState<boolean>(false);
   const [state, setState] = useState<InventoryState>({
-    menuId: 0, // Default ID placeholder (should be updated dynamically)
-    orderTypeId: 0, // Default ID placeholder
-    dateStart: "", // Empty string for date input
-    dateEnd: "", // Empty string for optional end date
-    quantity: 0, // Default quantity
-    orderType: "", // Empty string for order type
+    menuId: "", // Default empty, should be updated dynamically
+    orderTypeId: "", // Ensure consistent type as a string
+    dateStart: "",
+    dateEnd: "",
+    timeStart: "",
+    timeEnd: "",
+    quantity: 0,
+    orderType: "",
   });
 
   const handleChange = (
@@ -23,14 +23,19 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
 
     setState((prev) => ({
       ...prev,
-      [name]:
-        type === "number" || name.includes("Id") ? Number(value) || "" : value,
+      [name]: type === "number" ? Number(value) : value.toString(),
     }));
   };
 
   const toggleShowAddInventoryModal = () => {
     setShowAddInventory((prev) => !prev);
   };
+
+  // Debugging state updates
+  useEffect(() => {
+    console.log("Updated State:", state);
+  }, [state]);
+
   return (
     <InventoryContext.Provider
       value={{

@@ -1,24 +1,35 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import React, { useState } from "react";
+
+interface OrderItem {
+  menu: {
+    title: string;
+    price: number;
+  };
+  quantity: number;
+}
 
 interface StatusCardProps {
   status: string;
   description: string;
-  order: any[];
   orderId: string;
+  order?: OrderItem[];
 }
 
 const StatusCard: React.FC<StatusCardProps> = ({
-  status,
+  // status,
   description,
-  order,
   orderId,
+  order = [], // Default to empty array if order is undefined
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
+
+  // Function to get last 6 characters of orderId
+  const getShortOrderId = (id: string) => id.slice(-6);
 
   return (
     <div
@@ -28,14 +39,14 @@ const StatusCard: React.FC<StatusCardProps> = ({
       <div className="flex justify-between items-center gap-4 cursor-pointer">
         <div className="flex gap-4">
           <div>
-            <p className="text-base font-bold text-gray-900">{orderId}</p>
+            <p className="text-base font-bold text-gray-900">{getShortOrderId(orderId)}</p>
             <p className="text-sm font-light text-gray-400">{description}</p>
           </div>
         </div>
         <div>
           {isCollapsed ? (
             <svg
-              className="w-6 h-6 text-gray-500 "
+              className="w-6 h-6 text-gray-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -68,20 +79,24 @@ const StatusCard: React.FC<StatusCardProps> = ({
       </div>
       {isCollapsed && (
         <div className="mt-4">
-          <p className="font-bold text-sm">{status}</p>
-          {order.map((item: any, idx: number) => (
-            <div key={idx} className="text-gray-600 text-sm">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-gray-700 font-semibold">
-                    {item.menu.title}
-                  </p>
-                  <p className="text-gray-600 text-xs ">RM {item.menu.price}</p>
+          <p className="font-bold text-sm">Order</p>
+          {order.length > 0 ? (
+            order.map((item: OrderItem, idx: number) => (
+              <div key={idx} className="text-gray-600 text-sm">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-gray-700 font-semibold">
+                      {item.menu.title}
+                    </p>
+                    <p className="text-gray-600 text-xs">RM {item.menu.price}</p>
+                  </div>
+                  <p>x {item.quantity}</p>
                 </div>
-                <p>x {item.quantity}</p>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-gray-500 text-sm">No items in this order.</p>
+          )}
         </div>
       )}
     </div>

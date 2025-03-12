@@ -24,10 +24,13 @@ const OrderRaya: React.FC = () => {
     setOrderData(null);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders?phoneNumber=${phoneNumber}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders?phoneNumber=${phoneNumber}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       const result = await response.json();
 
@@ -45,7 +48,7 @@ const OrderRaya: React.FC = () => {
 
   return (
     <>
-    <NavbarCustomer />
+      <NavbarCustomer />
       <div className="bg-primary min-h-[90vh] flex flex-col">
         <div className="max-w-80 mx-auto flex flex-col justify-between flex-grow md:my-4 rounded-md">
           <div className="flex justify-start items-start pt-8 pb-4">
@@ -97,7 +100,7 @@ const OrderRaya: React.FC = () => {
 
                 <div className="mt-2">
                   <div className="space-y-2">
-                    {orderData.orders.map((order: any, index: number) => (
+                    {/* {orderData.orders.map((order: any, index: number) => (
                       <div key={index}>
                         {order.orderStatus.map((status: any, idx: number) => (
                           <StatusCard
@@ -111,11 +114,26 @@ const OrderRaya: React.FC = () => {
                           />
                         ))}
                       </div>
+                    ))} */}
+                    {orderData.map((order: any, index: number) => (
+                      <div key={index}>
+                        {order.statuses.map((status: any, idx: number) => (
+                          <StatusCard
+                            key={idx}
+                            status={status.status}
+                            description={`Updated at: ${new Date(
+                              status.created_at
+                            ).toLocaleString()}`}
+                            order={[]} // No `orderItems` in the provided data, setting to empty array
+                            orderId={order.id}
+                          />
+                        ))}
+                      </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="mt-8">
+                {/* <div className="mt-8">
                   <p className="text-white font-bold text-lg mb-2">History</p>
                   <hr className="border border-white" />
                 </div>
@@ -138,7 +156,7 @@ const OrderRaya: React.FC = () => {
                       </div>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </>
             )}
           </div>

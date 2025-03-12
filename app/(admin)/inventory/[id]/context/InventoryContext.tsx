@@ -1,10 +1,12 @@
 import { ChangeEvent, createContext } from "react";
 
 export interface InventoryState {
-  menuId: number;
-  orderTypeId: number;
+  menuId: string;
+  orderTypeId: string;
   dateStart: string;
   dateEnd: string;
+  timeStart: string;
+  timeEnd: string;
   quantity: number;
   orderType: string;
 }
