@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { href: "/menu-editor", label: "Menu Editor" },
   { href: "/order-list", label: "Order List" },
   { href: "/inventory", label: "Inventory" },
+  { href: "/setting", label: "Setting" },
 ];
 
 const NavLinks = ({ onClick }: { onClick?: () => void }) => (

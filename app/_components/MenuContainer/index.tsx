@@ -21,6 +21,8 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
   return (
     <div key={typeId}>
       {menus.map((item) => {
+
+        console.log("MenuContainer Item:", item);
         // const order = orders.find((order) => order.id === item.id);
         // const count = order ? order.quantity : 0; // Default to 0 if item is not in the cart
         return (

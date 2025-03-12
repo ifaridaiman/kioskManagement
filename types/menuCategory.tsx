@@ -1,4 +1,5 @@
 export interface MenuResponse {
+  status: string; // ✅ Fix: API returns "status", not "success"
   data: MenuCategory[]; // ✅ Fix: API returns { data: [...] }
 }
 

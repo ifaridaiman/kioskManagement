@@ -17,7 +17,7 @@ interface CollectionFetch {
 
 const CollectionList = () => {
   const [collections, setCollections] = useState<CollectionFetch[]>([]);
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
   const [newCollectionName, setNewCollectionName] = useState<string>("");
 
   const fetchCollections = async () => {

@@ -44,7 +44,7 @@ const OrderDaily: React.FC = () => {
         setIsLoadingMenus(true);
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/menus?orderType=${activeTab}`
+          `/api/menus/typeId?menuTypeId=${activeTab}`
         );
         
         if (!response.ok) {
@@ -52,7 +52,6 @@ const OrderDaily: React.FC = () => {
         }
         
         const jsonData: MenuResponse = await response.json();
-        console.log(`Menus for ${activeTab}:`, jsonData);
         
         setMenus(jsonData.data); // ✅ Correctly access `data` array
         
@@ -85,32 +84,6 @@ const OrderDaily: React.FC = () => {
     description: orderType.description,
   }));
 
-  // [
-  //   {
-  //     id: "d1f5e8b0-8f4b-4b2e-9f1e-1c2d3e4f5g6h",
-  //     label: "Daily",
-  //     content: (
-  //       <div className="flex-1 overflow-auto">
-  //         <div className="grid grid-cols-1 gap-2">
-  //           <MenuContainer slug="Lemang" menus={mockMenus} />
-  //         </div>
-  //       </div>
-  //     ),
-  //     description: "This order will be closed at 3.00PM everyday.",
-  //   },
-  //   {
-  //     id: "d1f5e8b0-8f4b-4b2e-9f1e-1c2d3e4f5g6i",
-  //     label: "Raya",
-  //     content: (
-  //       <div className="flex-1 overflow-auto">
-  //         <div className="grid grid-cols-1 gap-2">
-  //           <MenuContainer slug="Lemang" menus={mockMenus} />
-  //         </div>
-  //       </div>
-  //     ),
-  //     description: "This order will be closed at 3.00PM everyday.",
-  //   },
-  // ];
 
   // Calculate total item count
   const orderCount = useSelector((state: RootState) =>
