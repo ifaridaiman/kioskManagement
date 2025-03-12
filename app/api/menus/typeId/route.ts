@@ -36,9 +36,8 @@ export interface ApiResponse<T> {
 }
 
 
-export async function POST(req: NextRequest )
- {
-    
+export async function POST(req: NextRequest) {
+
     try {
         const { searchParams } = new URL(req.url);
         const menuTypeId = searchParams.get("menuTypeId");
@@ -54,7 +53,7 @@ export async function POST(req: NextRequest )
         const extractedMenuTypeId = Array.isArray(menuTypeId) ? menuTypeId[0] : menuTypeId;
 
         console.log("🆔 Received menuTypeId:", extractedMenuTypeId);
-        
+
         // Fetch order types to validate if menuTypeId is valid
         const orderTypeResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/types`);
         if (!orderTypeResponse.ok) {
@@ -90,8 +89,20 @@ export async function POST(req: NextRequest )
 
         // Get today's date and current time
         const now = new Date();
-        const todayDate = new Date(now.toISOString().split("T")[0]); // Extract YYYY-MM-DD and set time to 00:00:00
-        const currentTime = now.toTimeString().split(" ")[0]; // Extract HH:MM:SS format
+
+        // ✅ Get today’s date in KL timezone (YYYY-MM-DD)
+        const todayDate = new Date(
+            new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kuala_Lumpur' }).format(now)
+        );
+
+        // ✅ Get the current time in KL timezone (HH:MM:SS)
+        const currentTime = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Kuala_Lumpur',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).format(now);
 
         function filterInventory(inventory: Inventory[]): Inventory[] {
             return inventory.filter((item) => {
