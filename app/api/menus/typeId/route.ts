@@ -36,13 +36,13 @@ export interface ApiResponse<T> {
 }
 
 
-export async function GET(req: NextRequest )
+export async function POST(req: NextRequest )
  {
     
     try {
         const { searchParams } = new URL(req.url);
         const menuTypeId = searchParams.get("menuTypeId");
-        
+
         if (!menuTypeId) {
             return Response.json(
                 { success: false, error: "Missing menuTypeId query parameter." },

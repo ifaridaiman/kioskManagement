@@ -44,7 +44,13 @@ const OrderDaily: React.FC = () => {
         setIsLoadingMenus(true);
 
         const response = await fetch(
-          `/api/menus/typeId?menuTypeId=${activeTab}`
+          `/api/menus/typeId?menuTypeId=${activeTab}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
         );
         
         if (!response.ok) {
