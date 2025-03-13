@@ -1,30 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, useCallback } from "react";
 
-interface OrderType {
-  name: string;
-  description: string;
-}
 
-export interface InventoryItem {
-  quantity: number;
-  start_date: string | null;
-  end_date: string | null;
-  start_time: string | null;
-  end_time: string | null;
-  order_type: OrderType;
-}
 
 interface ApiResponse {
-  data: {
-    id: string;
-    title: string;
-    description: string;
-    price: string;
-    inventory: InventoryItem[];
-    assets: any[];
+  menuName: string; // ✅ Menu title from the API response
+  data: InventoryItem[]; // ✅ List of inventories
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
   };
 }
+
+// Define the structure of an InventoryItem
+export interface InventoryItem {
+  id: string;
+  menu_id: string;
+  order_type_id: string;
+  quantity: number;
+  start_date?: string;
+  end_date?: string;
+  start_time?: string;
+  end_time?: string;
+  created_at?: string;
+  updated_at?: string;
+  deleted_at?: string;
+  order_types?: {
+    id: string;
+    name: string;
+  };
+}
+
 
 export const useInventoryList = (menuId: string) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -38,7 +46,7 @@ export const useInventoryList = (menuId: string) => {
 
   const fetchInventories = async (): Promise<ApiResponse> => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/menus/${menuId}`
+      `/api/menus/inventory?menuId=${menuId}`
     );
 
     if (!response.ok) {
@@ -54,19 +62,23 @@ export const useInventoryList = (menuId: string) => {
     setIsLoading(true);
     try {
       const response = await fetchInventories();
+      console.log("Response: ", response);
 
-      // ✅ Ensure inventory exists and set default if empty
-      const inventoryData = response.data.inventory || [];
+
+      // ✅ Ensure data follows the correct response structure
+      const inventoryData = response.data || [];
+      const menuTitle = response.menuName || "Unknown Menu"; // Default fallback
 
       setInventories(inventoryData);
-      setMenuName(response.data.title); // ✅ Updated to match API response
+      setMenuName(menuTitle);
     } catch (err: any) {
-      console.error(err);
+      console.error("Error fetching inventories:", err);
       alert(err.message || "An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }
   }, [menuId, refresh]);
+
 
   const deleteInventory = async (id: string) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this inventory?");

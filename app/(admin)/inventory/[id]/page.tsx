@@ -11,7 +11,7 @@ const Inventory = () => {
   const params = useParams();
   const menuId = params?.id as string;
 
-  const { inventories, menuName, isLoading, refreshInventories } = useInventoryList(menuId);
+  const { inventories, menuName, isLoading, refreshInventories, deleteInventory } = useInventoryList(menuId);
   const { toggleShowAddInventoryModal, showAddInventory } = useInventory();
 
   return (
@@ -30,7 +30,7 @@ const Inventory = () => {
           </div>
         </HeaderTop>
         <hr className="mb-4" />
-        <InventoryList inventories={inventories} isLoading={isLoading} />
+        <InventoryList inventories={inventories} isLoading={isLoading} deleteInventory={deleteInventory} />
       </div>
       {showAddInventory && <InventoryAdd menuId={menuId} refreshInventories={refreshInventories} />}
     </>

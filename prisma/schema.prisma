@@ -1,0 +1,285 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model cache {
+  key        String @id @db.VarChar(255)
+  value      String
+  expiration Int
+}
+
+model cache_locks {
+  key        String @id @db.VarChar(255)
+  owner      String @db.VarChar(255)
+  expiration Int
+}
+
+model customers {
+  id           String    @id @db.Uuid
+  name         String    @db.VarChar(255)
+  email        String    @db.VarChar(255)
+  phone_number String    @db.VarChar(255)
+  address      String
+  created_at   DateTime? @db.Timestamp(0)
+  updated_at   DateTime? @db.Timestamp(0)
+  deleted_at   DateTime? @db.Timestamp(0)
+  orders       orders[]
+}
+
+model failed_jobs {
+  id         BigInt   @id @default(autoincrement())
+  uuid       String   @unique(map: "failed_jobs_uuid_unique") @db.VarChar(255)
+  connection String
+  queue      String
+  payload    String
+  exception  String
+  failed_at  DateTime @default(now()) @db.Timestamp(0)
+}
+
+model gateway_bills {
+  id              String    @id @db.Uuid
+  payment_id      String    @db.Uuid
+  payment_gateway String    @db.VarChar(255)
+  bill_code       String    @db.VarChar(255)
+  status          String    @db.VarChar(255)
+  amount          Decimal   @db.Decimal(10, 4)
+  due_to          DateTime  @db.Timestamp(0)
+  url             String
+  paid_at         DateTime? @db.Timestamp(0)
+  success_url     String?   @db.VarChar(255)
+  failed_url      String?   @db.VarChar(255)
+  created_at      DateTime? @db.Timestamp(0)
+  updated_at      DateTime? @db.Timestamp(0)
+  deleted_at      DateTime? @db.Timestamp(0)
+  payments        payments  @relation(fields: [payment_id], references: [id], onDelete: Cascade, map: "gateway_bills_payment_id_foreign")
+}
+
+model gateway_collections {
+  id              String    @id @db.Uuid
+  name            String    @db.VarChar(255)
+  secret          String    @db.VarChar(255)
+  payment_gateway String    @db.VarChar(255)
+  collection_key  String    @db.Uuid
+  status          String    @default("active") @db.VarChar(255)
+  created_at      DateTime? @db.Timestamp(0)
+  updated_at      DateTime? @db.Timestamp(0)
+  deleted_at      DateTime? @db.Timestamp(0)
+}
+
+model job_batches {
+  id             String  @id @db.VarChar(255)
+  name           String  @db.VarChar(255)
+  total_jobs     Int
+  pending_jobs   Int
+  failed_jobs    Int
+  failed_job_ids String
+  options        String?
+  cancelled_at   Int?
+  created_at     Int
+  finished_at    Int?
+}
+
+model jobs {
+  id           BigInt @id @default(autoincrement())
+  queue        String @db.VarChar(255)
+  payload      String
+  attempts     Int    @db.SmallInt
+  reserved_at  Int?
+  available_at Int
+  created_at   Int
+
+  @@index([queue], map: "jobs_queue_index")
+}
+
+model menu_assets {
+  id         String    @id @db.Uuid
+  menu_id    String    @db.Uuid
+  asset_path String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  menus      menus     @relation(fields: [menu_id], references: [id], onDelete: Cascade, map: "menu_assets_menu_id_foreign")
+}
+
+model menu_categories {
+  id          String    @id @db.Uuid
+  title       String    @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  deleted_at  DateTime? @db.Timestamp(0)
+  menus       menus[]
+}
+
+model menu_inventories {
+  id            String      @id @db.Uuid
+  menu_id       String      @db.Uuid
+  order_type_id String      @db.Uuid
+  quantity      Int
+  start_date    DateTime?   @db.Timestamp(0)
+  end_date      DateTime?   @db.Timestamp(0)
+  start_time    DateTime?   @db.Time(0)
+  end_time      DateTime?   @db.Time(0)
+  created_at    DateTime?   @db.Timestamp(0)
+  updated_at    DateTime?   @db.Timestamp(0)
+  deleted_at    DateTime?   @db.Timestamp(0)
+  menus         menus       @relation(fields: [menu_id], references: [id], onDelete: Cascade, map: "menu_inventories_menu_id_foreign")
+  order_types   order_types @relation(fields: [order_type_id], references: [id], onDelete: Cascade, map: "menu_inventories_order_type_id_foreign")
+}
+
+model menus {
+  id               String             @id @db.Uuid
+  menu_category_id String             @db.Uuid
+  title            String             @db.VarChar(255)
+  description      String?
+  price            Decimal            @db.Decimal(10, 4)
+  created_at       DateTime?          @db.Timestamp(0)
+  updated_at       DateTime?          @db.Timestamp(0)
+  deleted_at       DateTime?          @db.Timestamp(0)
+  menu_assets      menu_assets[]
+  menu_inventories menu_inventories[]
+  menu_categories  menu_categories    @relation(fields: [menu_category_id], references: [id], onDelete: Cascade, map: "menus_menu_category_id_foreign")
+  order_items      order_items[]
+}
+
+model migrations {
+  id        Int    @id @default(autoincrement())
+  migration String @db.VarChar(255)
+  batch     Int
+}
+
+model order_items {
+  id         String    @id @db.Uuid
+  order_id   String    @db.Uuid
+  menu_id    String    @db.Uuid
+  quantity   Int
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  menus      menus     @relation(fields: [menu_id], references: [id], onDelete: Cascade, map: "order_items_menu_id_foreign")
+  orders     orders    @relation(fields: [order_id], references: [id], onDelete: Cascade, map: "order_items_order_id_foreign")
+}
+
+model order_statuses {
+  id         String    @id @db.Uuid
+  order_id   String    @db.Uuid
+  status     String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  orders     orders    @relation(fields: [order_id], references: [id], onDelete: Cascade, map: "order_statuses_order_id_foreign")
+}
+
+model order_type_rules {
+  id            String      @id @db.Uuid
+  order_type_id String      @db.Uuid
+  rule_type     String      @db.VarChar(255)
+  close_date    DateTime?   @db.Date
+  close_time    DateTime?   @db.Time(0)
+  created_at    DateTime?   @db.Timestamp(0)
+  updated_at    DateTime?   @db.Timestamp(0)
+  deleted_at    DateTime?   @db.Timestamp(0)
+  order_types   order_types @relation(fields: [order_type_id], references: [id], onDelete: Cascade, map: "order_type_rules_order_type_id_foreign")
+}
+
+model order_types {
+  id               String             @id @db.Uuid
+  name             String             @db.VarChar(255)
+  description      String?
+  created_at       DateTime?          @db.Timestamp(0)
+  updated_at       DateTime?          @db.Timestamp(0)
+  deleted_at       DateTime?          @db.Timestamp(0)
+  menu_inventories menu_inventories[]
+  order_type_rules order_type_rules[]
+  orders           orders[]
+}
+
+model orders {
+  id              String           @id @db.Uuid
+  customer_id     String?          @db.Uuid
+  order_type_id   String?          @db.Uuid
+  payment_id      String?          @db.Uuid
+  payment_method  String           @db.VarChar(255)
+  delivery_method String           @db.VarChar(255)
+  created_at      DateTime?        @db.Timestamp(0)
+  updated_at      DateTime?        @db.Timestamp(0)
+  deleted_at      DateTime?        @db.Timestamp(0)
+  status          String           @default("active") @db.VarChar(255)
+  order_items     order_items[]
+  order_statuses  order_statuses[]
+  customers       customers?       @relation(fields: [customer_id], references: [id], onDelete: Cascade, map: "orders_customer_id_foreign")
+  order_types     order_types?     @relation(fields: [order_type_id], references: [id], onDelete: Cascade, map: "orders_order_type_id_foreign")
+  payments        payments?        @relation(fields: [payment_id], references: [id], onDelete: Cascade, map: "orders_payment_id_foreign")
+}
+
+model password_reset_tokens {
+  email      String    @id @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+}
+
+model payment_gateway_configs {
+  id         String    @id @db.Uuid
+  type       String    @db.VarChar(255)
+  value      Json      @db.Json
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+}
+
+model payments {
+  id            String          @id @db.Uuid
+  name          String          @db.VarChar(255)
+  email         String          @db.VarChar(255)
+  description   String?
+  reference     String?
+  amount        Decimal         @db.Decimal(10, 4)
+  created_at    DateTime?       @db.Timestamp(0)
+  updated_at    DateTime?       @db.Timestamp(0)
+  deleted_at    DateTime?       @db.Timestamp(0)
+  gateway_bills gateway_bills[]
+  orders        orders[]
+}
+
+model personal_access_tokens {
+  id             BigInt    @id @default(autoincrement())
+  tokenable_type String    @db.VarChar(255)
+  tokenable_id   BigInt
+  name           String    @db.VarChar(255)
+  token          String    @unique(map: "personal_access_tokens_token_unique") @db.VarChar(64)
+  abilities      String?
+  last_used_at   DateTime? @db.Timestamp(0)
+  expires_at     DateTime? @db.Timestamp(0)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+
+  @@index([tokenable_type, tokenable_id], map: "personal_access_tokens_tokenable_type_tokenable_id_index")
+}
+
+model sessions {
+  id            String  @id @db.VarChar(255)
+  user_id       BigInt?
+  ip_address    String? @db.VarChar(45)
+  user_agent    String?
+  payload       String
+  last_activity Int
+
+  @@index([last_activity], map: "sessions_last_activity_index")
+  @@index([user_id], map: "sessions_user_id_index")
+}
+
+model users {
+  id                BigInt    @id @default(autoincrement())
+  name              String    @db.VarChar(255)
+  email             String    @unique(map: "users_email_unique") @db.VarChar(255)
+  email_verified_at DateTime? @db.Timestamp(0)
+  password          String    @db.VarChar(255)
+  remember_token    String?   @db.VarChar(100)
+  created_at        DateTime? @db.Timestamp(0)
+  updated_at        DateTime? @db.Timestamp(0)
+}

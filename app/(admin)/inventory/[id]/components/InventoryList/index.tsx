@@ -1,17 +1,16 @@
 import React from "react";
-// import { MdOutlineDelete } from "react-icons/md";
 import { InventoryItem } from "./hooks/useInventoryList";
-
+import { MdOutlineDelete } from "react-icons/md";
 interface InventoryListProps {
   inventories: InventoryItem[];
   isLoading: boolean;
-  // deleteInventory: (id: string) => void;
+  deleteInventory: (id: string) => void;
 }
 
 const InventoryList: React.FC<InventoryListProps> = ({
   inventories,
   isLoading,
-  // deleteInventory,
+  deleteInventory,
 }) => {
   return (
     <table className="w-full rounded-tl-md border border-gray-300">
@@ -39,8 +38,8 @@ const InventoryList: React.FC<InventoryListProps> = ({
             </td>
           </tr>
         ) : inventories.length > 0 ? (
-          inventories.map((inventory, index) => (
-            <tr key={index} className="border-t">
+          inventories.map((inventory) => (
+            <tr key={inventory.id} className="border-t">
               <td className="px-4 py-2">
                 {inventory.start_date
                   ? new Date(inventory.start_date).toLocaleDateString("en-GB", {
@@ -52,15 +51,15 @@ const InventoryList: React.FC<InventoryListProps> = ({
               </td>
               <td className="px-4 py-2">{inventory.quantity}</td>
               <td className="px-4 py-2">
-                {inventory.order_type?.name || "N/A"}
+                {inventory.order_types?.name || "N/A"}
               </td>
               <td className="px-4 py-2 flex justify-center">
-                {/* <button
+                <button
                   className="text-red-500 hover:text-red-700"
-                  onClick={() => deleteInventory(inventory.start_date || "")} // Use an appropriate identifier
+                  onClick={() => deleteInventory(inventory.id)} // Use a valid identifier
                 >
                   <MdOutlineDelete size={20} />
-                </button> */}
+                </button>
               </td>
             </tr>
           ))
