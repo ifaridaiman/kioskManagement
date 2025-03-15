@@ -17,7 +17,7 @@ const InventoryList: React.FC<InventoryListProps> = ({
       <thead className="bg-gray-200">
         <tr>
           <th className="py-2 text-left px-4 text-gray-600 font-semibold">
-            Date
+            Date Pickup
           </th>
           <th className="py-2 text-left px-4 text-gray-600 font-semibold">
             Quantity
@@ -41,8 +41,8 @@ const InventoryList: React.FC<InventoryListProps> = ({
           inventories.map((inventory) => (
             <tr key={inventory.id} className="border-t">
               <td className="px-4 py-2">
-                {inventory.start_date
-                  ? new Date(inventory.start_date).toLocaleDateString("en-GB", {
+                {inventory.end_date
+                  ? new Date(inventory.end_date).toLocaleDateString("en-GB", {
                       day: "2-digit",
                       month: "2-digit",
                       year: "numeric",

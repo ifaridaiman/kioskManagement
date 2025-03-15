@@ -46,3 +46,12 @@ export interface OrderTypeRule {
   created_at: string;
   updated_at: string;
 }
+
+export interface AvailableDateResponse {
+  status: string; // ✅ Fix: API returns "status", not "success"
+  data: AvailableDate[]; // ✅ Fix: API returns { data: [...] }
+}
+
+export interface AvailableDate {
+  date: string;
+}

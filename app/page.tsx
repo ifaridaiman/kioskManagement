@@ -6,26 +6,30 @@ import MenuContainer from "@/app/_components/MenuContainer";
 import TabsContainer from "@/components/Tabs/TabsContainer";
 import Link from "next/link";
 import axios from "axios";
-import { OrderType, MenuCategory, MenuResponse } from "@/types/menuCategory";
-// import FullPageLoader from "@/components/Loader/FullPageLoader";
+import {
+  OrderType,
+  MenuCategory,
+  MenuResponse,
+  AvailableDateResponse,
+  AvailableDate,
+} from "@/types/menuCategory";
 
 const OrderDaily: React.FC = () => {
-  const activeTab = useSelector((state: RootState) => state.navigation.activeId); // ✅ Get activeTab from Redux
+  const activeTab = useSelector((state: RootState) => state.navigation.activeId);
   const [orderTypes, setOrderTypes] = useState<OrderType[]>([]);
   const [menus, setMenus] = useState<MenuCategory[]>([]);
   const [isLoadingTabs, setIsLoadingTabs] = useState(true);
-  const [isLoadingMenus, setIsLoadingMenus] = useState(true);
+  const [isLoadingMenus, setIsLoadingMenus] = useState(false);
+  const [isLoadingAvailableDate, setIsLoadingAvailableDate] = useState(true);
+  const [availableDate, setAvailableDate] = useState<AvailableDate[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null); // New state for selected pickup date
 
   useEffect(() => {
     const fetchOrderTypes = async () => {
       try {
-        const response = await axios.get<OrderType[]>(
-          `${process.env.NEXT_PUBLIC_API_URL}/orders/types`
-        );
+        const response = await axios.get<OrderType[]>(`${process.env.NEXT_PUBLIC_API_URL}/orders/types`);
         console.log("Order Types:", response.data);
         setOrderTypes(response.data);
-
-        
       } catch (error) {
         console.error("Error fetching order types:", error);
       } finally {
@@ -37,30 +41,57 @@ const OrderDaily: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (activeTab === null) return;
+    const fetchAvailableDate = async () => {
+      try {
+        setIsLoadingAvailableDate(true);
+        const response = await fetch(`/api/menus/date-available`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const jsonData: AvailableDateResponse = await response.json();
+        setAvailableDate(jsonData.data);
+
+        if (jsonData.data.length > 0) {
+          setSelectedDate(jsonData.data[0].date); // ✅ Auto-select first available date
+        }
+      } catch (error) {
+        console.error("Error fetching AvailableDate:", error);
+      } finally {
+        setIsLoadingAvailableDate(false);
+      }
+    };
+
+    fetchAvailableDate();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedDate) return; // ✅ Wait for a valid selected date before fetching menus
 
     const fetchMenus = async () => {
       try {
         setIsLoadingMenus(true);
 
-        const response = await fetch(
-          `/api/menus/typeId?menuTypeId=${activeTab}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-        
+        const response = await fetch(`/api/menus/list`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ date: selectedDate }), // ✅ Send selected pickup date in the request body
+        });
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        
+
         const jsonData: MenuResponse = await response.json();
-        
-        setMenus(jsonData.data); // ✅ Correctly access `data` array
-        
+        setMenus(jsonData.data);
       } catch (error) {
         console.error("Error fetching menus:", error);
       } finally {
@@ -69,7 +100,11 @@ const OrderDaily: React.FC = () => {
     };
 
     fetchMenus();
-  }, [activeTab]); // ✅ Dependency added
+  }, [selectedDate]); // ✅ Re-fetch menus when selectedDate changes
+
+  const handleDateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedDate(event.target.value); // ✅ Update selected date when the user changes the dropdown
+  };
 
   const tabs = orderTypes.map((orderType) => ({
     id: orderType.id,
@@ -77,46 +112,48 @@ const OrderDaily: React.FC = () => {
     content: (
       <div className="flex-1 overflow-auto">
         <div className="grid grid-cols-1 gap-2">
-          {/* <p>{menus.title}</p> */}
           {isLoadingMenus && <p>Loading menus...</p>}
-          <MenuContainer
-            // slug={menus.title}
-            typeId={activeTab || ""}
-            menus={menus}
-          />
+          <div className="flex flex-col">
+            {isLoadingAvailableDate && <p>Loading available date...</p>}
+            <label htmlFor="pickupDate">Pickup Date</label>
+            <select
+              className="border p-2 rounded bg-white"
+              name="pickupDate"
+              id="pickupDate"
+              value={selectedDate || ""}
+              onChange={handleDateChange}
+            >
+              {availableDate.length > 0 ? (
+                availableDate.map((item) => (
+                  <option key={item.date} value={item.date}>
+                    {item.date}
+                  </option>
+                ))
+              ) : (
+                <option value="">No available dates</option>
+              )}
+            </select>
+          </div>
+          <MenuContainer typeId={activeTab || ""} menus={menus} />
         </div>
       </div>
     ),
     description: orderType.description,
   }));
 
-
-  // Calculate total item count
   const orderCount = useSelector((state: RootState) =>
     state.order.orders.reduce((total, order) => total + order.quantity, 0)
   );
 
-  // Calculate total RM (price × quantity)
   const totalPrice = useSelector((state: RootState) =>
-    state.order.orders.reduce(
-      (total, order) => total + order.price * order.quantity,
-      0
-    )
+    state.order.orders.reduce((total, order) => total + order.price * order.quantity, 0)
   );
-
-  // const mockMenus = [
-  //   { id:"abs123",name: "Lemang XL", price: 2.5, stocks: 0 },
-  //   { id:"abs124",name: "Lemang L", price: 2.5, stocks: 5 },
-  //   { id:"abs125",name: "Lemang M", price: 2.5, stocks: 10 },
-  //   { id:"abs126",name: "Serunding", price: 5.5, stocks: 10 },
-  // ];
 
   return (
     <div className="md:max-w-80 mx-auto">
       <div className="flex flex-col h-screen">
         {isLoadingTabs && <p>Loading tabs...</p>}
         <TabsContainer tabs={tabs} activeTab={activeTab} />
-        {/* Basket Section */}
         <div className="sticky bottom-0 z-10 bg-white w-full border-t px-4 py-4">
           <Link
             href={"/order/customer-detail"}
