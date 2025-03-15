@@ -35,6 +35,7 @@ export async function POST(request:NextRequest) {
                 menus: {
                     select: {
                         price: true,
+                        title: true,
                         description: true,
                         menu_categories: {
                             select: {
@@ -80,7 +81,7 @@ export async function POST(request:NextRequest) {
         
             const menuItem = {
                 id: inventory.menu_id,
-                title: inventory.menus?.menu_categories?.title || "Unknown", // ✅ Use menu category title instead
+                title: inventory.menus?.title || "Unknown", // ✅ Use menu category title instead
                 description: inventory.menus?.description || "No description",
                 price: inventory.menus?.price?.toString() || "0",
                 inventory: [

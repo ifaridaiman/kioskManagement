@@ -2,7 +2,11 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addOrder, removeOrder, updateQuantity } from "@/store/slice/orderSlice";
+import {
+  addOrder,
+  removeOrder,
+  updateQuantity,
+} from "@/store/slice/orderSlice";
 import { IoChevronBack } from "react-icons/io5";
 import { GoPlusCircle } from "react-icons/go";
 import { BiMinus } from "react-icons/bi";
@@ -14,14 +18,28 @@ interface MenuCardProps {
   price: number;
   stocks: number;
   quantity: number;
+  imageUrl: string;
+  description: string;
+  category: string;
 }
 
-
-const MenuCard: React.FC<MenuCardProps> = ({ id, name, price, stocks }) => {
-  console.log(`Rendering MenuCard: ${name}, Price: ${price}, Stocks: ${stocks}`);
+const MenuCard: React.FC<MenuCardProps> = ({
+  id,
+  name,
+  price,
+  description,
+  stocks,
+  imageUrl,
+  category,
+}) => {
+  console.log(
+    `Rendering MenuCard: ${name}, Price: ${price}, Stocks: ${stocks}`
+  );
   const [openDetail, setOpenDetail] = useState(false);
   const dispatch = useDispatch();
-  const order = useSelector((state: RootState) => state.order.orders.find((order) => order.id === id));
+  const order = useSelector((state: RootState) =>
+    state.order.orders.find((order) => order.id === id)
+  );
 
   const count = order ? order.quantity : 0;
 
@@ -34,11 +52,18 @@ const MenuCard: React.FC<MenuCardProps> = ({ id, name, price, stocks }) => {
       >
         <div className="w-full flex flex-row gap-4 items-center">
           <div>
-            <Image className="w-20 h-20 rounded-lg" src={"/assets/upload/menu/lemang-2.jpg"} height={80} width={80} alt={name} />
+            <Image
+              className="w-40 h-24 rounded-lg"
+              src={imageUrl || "/assets/upload/menu/lemangs.jpeg"}
+              height={80}
+              width={80}
+              alt={category}
+            />
           </div>
           <div className="flex flex-col gap-2 p-4 w-full">
             <div className="flex flex-col gap-1">
               <p className="text-base font-bold">{name}</p>
+
               {stocks > 0 ? (
                 <p className="text-sm text-gray-500">Stocks: {stocks}</p>
               ) : (
@@ -49,11 +74,19 @@ const MenuCard: React.FC<MenuCardProps> = ({ id, name, price, stocks }) => {
               <p className="text-base font-bold">RM {price.toFixed(2)}</p>
               {count > 0 ? (
                 <div className="flex items-center bg-gray-100 rounded-lg p-1">
-                  <button onClick={() => dispatch(updateQuantity({ id, quantity: count - 1 }))}>
+                  <button
+                    onClick={() =>
+                      dispatch(updateQuantity({ id, quantity: count - 1 }))
+                    }
+                  >
                     <BiMinus className="w-6 h-6 text-gray-600" />
                   </button>
                   <span className="px-4">{count}</span>
-                  <button onClick={() => dispatch(updateQuantity({ id, quantity: count + 1 }))}>
+                  <button
+                    onClick={() =>
+                      dispatch(updateQuantity({ id, quantity: count + 1 }))
+                    }
+                  >
                     <GoPlusCircle className="w-6 h-6 text-primary" />
                   </button>
                 </div>
@@ -79,13 +112,15 @@ const MenuCard: React.FC<MenuCardProps> = ({ id, name, price, stocks }) => {
       {/* Menu Detail Modal */}
       {openDetail && (
         <MenuDetail
-          id={id}  // ✅ Passing `id` directly
+          id={id} // ✅ Passing `id` directly
           name={name}
           price={price}
           stocks={stocks}
           onClose={() => setOpenDetail(false)}
-          imageUrl="/assets/upload/menu/lemang-2.jpg"
-          description="With average 8-10cm for each lemang."
+          imageUrl={
+            imageUrl || "/assets/upload/menu/noImage.jpeg"
+          }
+          description={description}
         />
       )}
     </>
@@ -112,18 +147,19 @@ const MenuDetail: React.FC<MenuDetailProps> = ({
   onClose,
 }) => {
   const dispatch = useDispatch();
-  const order = useSelector((state: RootState) => state.order.orders.find((order) => order.id === id));
+  const order = useSelector((state: RootState) =>
+    state.order.orders.find((order) => order.id === id)
+  );
 
   const count = order ? order.quantity : 0;
 
   const increaseQuantity = () => {
     if (count < stocks) {
-      if(count === 0) {
+      if (count === 0) {
         dispatch(addOrder({ id, name, price, quantity: 1 }));
-      }else{
+      } else {
         dispatch(updateQuantity({ id, quantity: count + 1 }));
       }
-      
     }
   };
 
@@ -136,7 +172,6 @@ const MenuDetail: React.FC<MenuDetailProps> = ({
   };
 
   const handleAddToBasket = () => {
-  
     onClose();
   };
 
@@ -151,7 +186,7 @@ const MenuDetail: React.FC<MenuDetailProps> = ({
           <IoChevronBack className="w-6 h-6 text-gray-600" />
         </button>
         <Image
-          src={imageUrl}
+          src={imageUrl || "/assets/upload/menu/lemangs.jpeg"}
           height={400}
           width={600}
           alt={name}
@@ -174,7 +209,9 @@ const MenuDetail: React.FC<MenuDetailProps> = ({
 
         {/* Price and Quantity Selector */}
         <div className="flex items-center justify-between mt-4">
-          <p className="text-green-700 font-semibold text-lg">RM {price.toFixed(2)}</p>
+          <p className="text-green-700 font-semibold text-lg">
+            RM {price.toFixed(2)}
+          </p>
           <div className="flex items-center border border-gray-300 rounded-lg p-1">
             <button onClick={decreaseQuantity} className="p-2">
               <BiMinus className="w-6 h-6 text-gray-600" />

@@ -14,6 +14,8 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
   // Get orders from Redux state
   const orders = useSelector((state: RootState) => state.order.orders);
 
+  
+
   useEffect(() => {
     console.log("MenuContainer Orders:", menus);
   }, [menus]);
@@ -28,7 +30,21 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
         return (
           <div key={item.id} className="mb-8">
             <p className="text-black font-bold text-xl">{item.title}</p>
-            {item.menus.map((menu: MenuItem) => (
+            {item.menus.map((menu: MenuItem) => {
+              
+                const imageUrl = item.title === "Lemang"
+                ? "/assets/upload/menu/lemangs.jpeg"
+                : item.title === "Rendang"
+                ? menu.title.includes("ayam")
+                ? "/assets/upload/menu/rendang-ayam.jpg"
+                : "/assets/upload/menu/rendang-daging.jpg"
+                : item.title === "Savoury"
+                ? "/assets/upload/menu/kuah-kacang.jpg"
+                : item.title === "Serunding"
+                ? "/assets/upload/menu/chicken-floss.jpg"
+                : "/assets/upload/menu/noImage.jpeg";
+                console.log("MenuContainer Menu:", menu);
+              return(
               <MenuCard
                 key={menu.id}
                 id={menu.id}
@@ -38,8 +54,11 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
                 quantity={
                   orders.find((order) => order.id === menu.id)?.quantity || 0
                 }
+                imageUrl={menu.image_url || imageUrl}
+                description={menu.description}
+                category={item.title}
               />
-            ))}
+            )})}
           </div>
         );
       })}

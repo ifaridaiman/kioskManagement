@@ -15,6 +15,7 @@ export interface MenuItem {
   title: string;
   description: string;
   price: string;
+  image_url: string;
   inventory: InventoryItem[];
 }
 
