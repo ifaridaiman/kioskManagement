@@ -34,9 +34,6 @@ const MenuCard: React.FC<MenuCardProps> = ({
   category,
   inventoryId
 }) => {
-  console.log(
-    `Rendering MenuCard: ${name}, Price: ${price}, Stocks: ${stocks}`
-  );
   const [openDetail, setOpenDetail] = useState(false);
   const dispatch = useDispatch();
   const order = useSelector((state: RootState) =>
@@ -45,7 +42,6 @@ const MenuCard: React.FC<MenuCardProps> = ({
 
   const count = order ? order.quantity : 0;
 
-  console.log("MenuCard Order:", order);
 
   return (
     <>

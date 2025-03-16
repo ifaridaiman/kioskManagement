@@ -31,10 +31,6 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
     setShowAddInventory((prev) => !prev);
   };
 
-  // Debugging state updates
-  useEffect(() => {
-    console.log("Updated State:", state);
-  }, [state]);
 
   return (
     <InventoryContext.Provider

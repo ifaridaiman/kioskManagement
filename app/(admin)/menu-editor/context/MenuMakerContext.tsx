@@ -72,7 +72,6 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("JSON POST", JSON.stringify(state));
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus`, {

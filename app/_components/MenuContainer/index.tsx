@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import MenuCard from "./MenuCard";
 import { RootState } from "@/store/store";
@@ -16,15 +16,11 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
 
   
 
-  useEffect(() => {
-    console.log("MenuContainer Orders:", menus);
-  }, [menus]);
 
   return (
     <div key={typeId}>
       {menus.map((item) => {
 
-        console.log("MenuContainer Item:", item);
         // const order = orders.find((order) => order.id === item.id);
         // const count = order ? order.quantity : 0; // Default to 0 if item is not in the cart
         return (
@@ -43,7 +39,6 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
                 : item.title === "Serunding"
                 ? "/assets/upload/menu/chicken-floss.jpg"
                 : "/assets/upload/menu/noImage.jpeg";
-                console.log("MenuContainer Menu:", menu.inventory[0]);
               return(
               <MenuCard
                 key={menu.id}

@@ -36,7 +36,6 @@ const OrderDaily: React.FC = () => {
         const response = await axios.get<OrderType[]>(
           `${process.env.NEXT_PUBLIC_API_URL}/orders/types`
         );
-        console.log("Order Types:", response.data);
         setOrderTypes(response.data);
       } catch (error) {
         console.error("Error fetching order types:", error);

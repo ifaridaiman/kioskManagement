@@ -40,7 +40,6 @@ const TotalButton: React.FC = () => {
 
       const data: CollectionResponse = await response.json();
 
-      console.log("Collection ID: ", data.data?.id);
       if (!data.success || !data.data?.id) {
         throw new Error(data.error || "Invalid collection response");
       }
@@ -84,10 +83,8 @@ const TotalButton: React.FC = () => {
 
       const data: OrderResponse = await response.json();
 
-      console.log("Order response: ", data.bill?.url);
 
       if (data.bill?.url) {
-        console.log("Payment URL: ", data.bill.url);
         window.open(data.bill.url, "_self"); // Open payment page in the same tab
       } else {
         throw new Error(data.error || "Payment URL not found.");

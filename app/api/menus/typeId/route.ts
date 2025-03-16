@@ -52,7 +52,6 @@ export async function POST(req: NextRequest) {
         // ✅ Ensure menuTypeId is always a string (handle spread routes)
         const extractedMenuTypeId = Array.isArray(menuTypeId) ? menuTypeId[0] : menuTypeId;
 
-        console.log("🆔 Received menuTypeId:", extractedMenuTypeId);
 
         // Fetch order types to validate if menuTypeId is valid
         const orderTypeResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/types`);
@@ -108,7 +107,6 @@ export async function POST(req: NextRequest) {
             return inventory.filter((item) => {
                 const { start_date, start_time, end_date, end_time, order_type } = item;
 
-                console.log("📌 Checking inventory item:", item);
 
                 let isStartDateValid = false;
                 let isStartTimeValid = true; // Default to true if no start_time exists
@@ -118,35 +116,29 @@ export async function POST(req: NextRequest) {
                 // ✅ **Condition 1: Ensure `start_date` is before or equal to today**
                 if (start_date) {
                     const parsedStartDate = new Date(start_date.split(" ")[0]); // Extract YYYY-MM-DD part
-                    console.log("🎯 Parsed Start Date:", parsedStartDate.toISOString().split("T")[0]);
 
                     isStartDateValid = parsedStartDate.getTime() <= todayDate.getTime(); // ✅ Compare only date (ignore time)
                 }
 
                 // ✅ **Condition 2: If `start_date` is today, check `start_time`**
                 if (isStartDateValid && start_date?.split(" ")[0] === todayDate.toISOString().split("T")[0] && start_time) {
-                    console.log("⏳ Checking Start Time:", start_time, "against", currentTime);
                     isStartTimeValid = start_time <= currentTime; // ✅ Start time must be before or equal to now
                 }
 
                 // ✅ **Condition 3: Ensure `end_date` is after or equal to today**
                 if (end_date) {
                     const parsedEndDate = new Date(end_date.split(" ")[0]); // Extract YYYY-MM-DD part
-                    console.log("🛑 Parsed End Date:", parsedEndDate.toISOString().split("T")[0]);
 
                     isEndDateValid = parsedEndDate.getTime() >= todayDate.getTime(); // ✅ Compare only date (ignore time)
                 }
 
                 // ✅ **Condition 4: If `end_date` is today, check `end_time`**
                 if (isEndDateValid && end_date?.split(" ")[0] === todayDate.toISOString().split("T")[0] && end_time) {
-                    console.log("⏳ Checking End Time:", end_time, "against", currentTime);
                     isEndTimeValid = end_time >= currentTime; // ✅ End time must be after or equal to now
                 }
 
                 // ✅ **Condition 5: Only include items where `order_type.name` matches `selectedOrderTypeName`**
                 const isOrderTypeValid = order_type && order_type.name === selectedOrderTypeName;
-
-                console.log("✅ Final Validation:", { isStartDateValid, isStartTimeValid, isEndDateValid, isEndTimeValid, isOrderTypeValid });
 
                 // ✅ **Return inventory items where all conditions are met**
                 return isStartDateValid && isStartTimeValid && isEndDateValid && isEndTimeValid && isOrderTypeValid;

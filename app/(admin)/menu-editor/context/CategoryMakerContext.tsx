@@ -67,10 +67,6 @@ export const CategoryMakerProvider: React.FC<{ children: ReactNode }> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("JSON POST", JSON.stringify(state));
-    const api_url = process.env.NEXT_PUBLIC_API_URL;
-    console.log("API URL", api_url);
-
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus/categories`, {
         method: "POST",

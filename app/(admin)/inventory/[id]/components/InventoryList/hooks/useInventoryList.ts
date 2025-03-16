@@ -62,8 +62,6 @@ export const useInventoryList = (menuId: string) => {
     setIsLoading(true);
     try {
       const response = await fetchInventories();
-      console.log("Response: ", response);
-
 
       // ✅ Ensure data follows the correct response structure
       const inventoryData = response.data || [];
