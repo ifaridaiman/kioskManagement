@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function POST(request:NextRequest) {
+export async function POST(request: NextRequest) {
     try {
         const body = await request.json().catch(() => null);
 
@@ -54,6 +54,66 @@ export async function POST(request:NextRequest) {
             );
         }
 
+        // const structuredResponse: {
+        //     id: string;
+        //     title: string;
+        //     description: string;
+        //     menus: {
+        //         id: string;
+        //         title: string;
+        //         description: string;
+        //         price: string;
+        //         inventory: {
+        //             inventory_id: string;
+        //             quantity: number;
+        //             start_date: Date | null;
+        //             end_date: Date | null;
+        //             start_time: Date | null;
+        //             end_time: Date | null;
+        //             order_type: {
+        //                 name: string;
+        //                 description: string;
+        //             };
+        //         }[];
+        //     }[];
+        // }[] = inventories.reduce((categories, inventory) => {
+        //     if (!inventory.menus) return categories;
+
+        //     const menuItem = {
+        //         id: inventory.menu_id,
+        //         title: inventory.menus?.title || "Unknown", // ✅ Use menu category title instead
+        //         description: inventory.menus?.description || "No description",
+        //         price: inventory.menus?.price?.toString() || "0",
+        //         inventory: [
+        //             {
+        //                 inventory_id: inventory.id,
+        //                 quantity: inventory.quantity || 0,
+        //                 start_date: inventory.start_date || null,
+        //                 end_date: inventory.end_date || null,
+        //                 start_time: inventory.start_time || null,
+        //                 end_time: inventory.end_time || null,
+        //                 order_type: {
+        //                     name: inventory.order_types?.name || "Unknown",
+        //                     description: inventory.order_types?.description ?? "No description",
+        //                 }
+        //             }
+        //         ]
+        //     };
+
+        //     const existingCategory = categories.find(cat => cat.id === inventory.menu_id);
+
+        //     if (existingCategory) {
+        //         existingCategory.menus.push(menuItem);
+        //     } else {
+        //         categories.push({
+        //             id: inventory.menu_id,
+        //             title: inventory.menus?.menu_categories?.title || "Unknown", // ✅ Use menu category title
+        //             description: inventory.menus?.description || "No description",
+        //             menus: [menuItem]
+        //         });
+        //     }
+        //     return categories;
+        // }, [] as typeof structuredResponse);
         const structuredResponse: {
             id: string;
             title: string;
@@ -78,10 +138,14 @@ export async function POST(request:NextRequest) {
             }[];
         }[] = inventories.reduce((categories, inventory) => {
             if (!inventory.menus) return categories;
-        
+
+            // Extract category title
+            const categoryTitle = inventory.menus.menu_categories?.title || "Unknown";
+
+            // Create menu item
             const menuItem = {
                 id: inventory.menu_id,
-                title: inventory.menus?.title || "Unknown", // ✅ Use menu category title instead
+                title: inventory.menus?.title || "Unknown",
                 description: inventory.menus?.description || "No description",
                 price: inventory.menus?.price?.toString() || "0",
                 inventory: [
@@ -99,26 +163,33 @@ export async function POST(request:NextRequest) {
                     }
                 ]
             };
-        
-            const existingCategory = categories.find(cat => cat.id === inventory.menu_id);
-        
+
+            // Find existing category
+            const existingCategory = categories.find(cat => cat.title === categoryTitle);
+
             if (existingCategory) {
+                // If category exists, add menu item to it
                 existingCategory.menus.push(menuItem);
             } else {
+                // If category doesn't exist, create a new one
                 categories.push({
-                    id: inventory.menu_id,
-                    title: inventory.menus?.menu_categories?.title || "Unknown", // ✅ Use menu category title
+                    id: inventory.menu_id, // Can be a random ID
+                    title: categoryTitle,  // ✅ Group by category title
                     description: inventory.menus?.description || "No description",
                     menus: [menuItem]
                 });
             }
             return categories;
         }, [] as typeof structuredResponse);
-        
+
+        // ✅ Sort categories to always put "Lemang" at the top
+        structuredResponse.sort((a, b) => (a.title === "Lemang" ? -1 : b.title === "Lemang" ? 1 : 0));
+
         return NextResponse.json(
             { success: true, data: structuredResponse },
             { status: 200 }
         );
+
     } catch (error) {
         console.error("Error fetching inventory data:", error);
 
