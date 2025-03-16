@@ -40,10 +40,12 @@ const MenuCard: React.FC<MenuCardProps> = ({
   const [openDetail, setOpenDetail] = useState(false);
   const dispatch = useDispatch();
   const order = useSelector((state: RootState) =>
-    state.order.orders.find((order) => order.id === id)
+    state.order.orders.find((order) => order.id === inventoryId)
   );
 
   const count = order ? order.quantity : 0;
+
+  console.log("MenuCard Order:", order);
 
   return (
     <>
