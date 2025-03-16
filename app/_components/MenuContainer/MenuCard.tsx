@@ -95,7 +95,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
                 <GoPlusCircle
                   className="w-6 h-6 text-primary"
                   onClick={() =>
-                    dispatch(addOrder({ id, name, price, quantity: 1, inventoryId }))
+                    dispatch(addOrder({ id, name, price, quantity: 1 }))
                   }
                 />
               )}
@@ -113,7 +113,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
       {/* Menu Detail Modal */}
       {openDetail && (
         <MenuDetail
-          id={id} // ✅ Passing `id` directly
+          id={inventoryId} // ✅ Passing `id` directly
           name={name}
           price={price}
           stocks={stocks}
@@ -122,7 +122,6 @@ const MenuCard: React.FC<MenuCardProps> = ({
             imageUrl || "/assets/upload/menu/noImage.jpeg"
           }
           description={description}
-          inventoryId={inventoryId}
         />
       )}
     </>
@@ -137,7 +136,6 @@ interface MenuDetailProps {
   imageUrl: string;
   stocks: number;
   onClose: () => void;
-  inventoryId: string;
 }
 
 const MenuDetail: React.FC<MenuDetailProps> = ({
@@ -148,7 +146,7 @@ const MenuDetail: React.FC<MenuDetailProps> = ({
   imageUrl,
   stocks,
   onClose,
-  inventoryId
+  
 }) => {
   const dispatch = useDispatch();
   const order = useSelector((state: RootState) =>
@@ -160,7 +158,7 @@ const MenuDetail: React.FC<MenuDetailProps> = ({
   const increaseQuantity = () => {
     if (count < stocks) {
       if (count === 0) {
-        dispatch(addOrder({ id, name, price, quantity: 1, inventoryId }));
+        dispatch(addOrder({ id, name, price, quantity: 1 }));
       } else {
         dispatch(updateQuantity({ id, quantity: count + 1 }));
       }

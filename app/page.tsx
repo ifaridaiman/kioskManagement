@@ -152,7 +152,7 @@ const OrderDaily: React.FC = () => {
           {isLoadingMenus && <p>Loading menus...</p>}
           <div className="flex flex-col">
             {isLoadingAvailableDate && <p>Loading available date...</p>}
-            <label htmlFor="pickupDate">Pickup Date</label>
+            <label className="font-semibold mb-2" htmlFor="pickupDate">Pickup Date</label>
             <select
               className="border p-2 rounded bg-white"
               name="pickupDate"

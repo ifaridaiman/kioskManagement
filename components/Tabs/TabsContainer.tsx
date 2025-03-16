@@ -71,7 +71,7 @@ const TabsContainer: React.FC<TabsContainerProps> = ({ tabs, activeTab }) => {
 
       {/* Tab Content */}
       <div className="mt-4 px-4 h-full min-h-screen">
-        {activeTabDetails && <p className="text-gray-600 text-xs mb-4">{activeTabDetails.description}</p>}
+        {activeTabDetails && <p className="text-gray-600 font-light text-sm mb-4">{activeTabDetails.description}</p>}
         {activeTabDetails && <div>{activeTabDetails.content}</div>}
       </div>
 
