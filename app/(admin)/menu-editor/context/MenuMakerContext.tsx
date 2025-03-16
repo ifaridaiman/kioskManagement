@@ -103,15 +103,16 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/menu/update", {
-        method: "PUT",
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus/${id}`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, title: state.title, price: state.price }),
+        body: JSON.stringify({ title: state.title, price: state.price, description: state.description }),
       });
 
       if (response.ok) {
         const updatedMenu = await response.json();
-        alert(`Menu updated successfully: ${updatedMenu.title}`);
+        
+        alert(`Menu updated successfully: ${updatedMenu.data.title}`);
         setShowUpdateMenuModal(false);
       } else {
         const error = await response.json();
@@ -122,6 +123,7 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
       alert("An unexpected error occurred.");
     } finally {
       setState({ menu_category_id: "", title: "", description: "", price: 0 });
+      window.location.reload();
     }
   };
 

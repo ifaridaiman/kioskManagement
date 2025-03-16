@@ -6,7 +6,7 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "staging-lemangtulapi.naisu.my",
-        pathname: "/api/storage/menu_assets/**", // Adjust based on actual path
+        pathname: "/storage/menu_assets/**", // Adjust based on actual path
       },
     ],
   },

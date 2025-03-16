@@ -28,10 +28,9 @@ export const useMenuList = () => {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch("/api/menu/delete", {
-        method: "PUT",
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus/${id}`, {
+        method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
       });
 
       if (!response.ok) throw new Error("Failed to delete menu");

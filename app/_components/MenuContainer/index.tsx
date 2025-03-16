@@ -35,8 +35,8 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
                   : item.title === "Serunding"
                   ? "/assets/upload/menu/chicken-floss.jpg"
                   : "/assets/upload/menu/noImage.jpeg";
-              return (
-                <MenuCard
+                return (
+                  <MenuCard
                   key={menu.id}
                   id={menu.id}
                   name={menu.title} // ✅ API uses "title"
@@ -46,14 +46,15 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
                     orders.find((order) => order.id === menu.id)?.quantity || 0
                   }
                   imageUrl={
-                    `${process.env.NEXT_PUBLIC_API_URL}${menu.image_url}` ||
-                    imageUrl
+                    menu.image_url
+                    ? `${process.env.NEXT_PUBLIC_API_URL_IMAGE}/${menu.image_url.replace(/^\//, '')}`
+                    : imageUrl
                   }
                   description={menu.description}
                   category={item.title}
-                  inventoryId={menu.inventory[0].inventory_id || ""}
-                />
-              );
+                  inventoryId={menu.inventory?.[0]?.inventory_id || ""}
+                  />
+                );
             })}
           </div>
         );
