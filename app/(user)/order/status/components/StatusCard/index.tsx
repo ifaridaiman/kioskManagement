@@ -17,7 +17,7 @@ interface StatusCardProps {
 }
 
 const StatusCard: React.FC<StatusCardProps> = ({
-  // status,
+  status,
   description,
   orderId,
   order = [], // Default to empty array if order is undefined
@@ -39,8 +39,9 @@ const StatusCard: React.FC<StatusCardProps> = ({
       <div className="flex justify-between items-center gap-4 cursor-pointer">
         <div className="flex gap-4">
           <div>
-            <p className="text-base font-bold text-gray-900">{getShortOrderId(orderId)}</p>
+            <p className="text-base font-bold text-gray-900">{getShortOrderId(orderId)} - <span className="text-sm font-semibold text-primary capitalize">{status}</span></p>
             <p className="text-sm font-light text-gray-400">{description}</p>
+            
           </div>
         </div>
         <div>

@@ -100,63 +100,32 @@ const OrderRaya: React.FC = () => {
 
                 <div className="mt-2">
                   <div className="space-y-2">
-                    {/* {orderData.orders.map((order: any, index: number) => (
-                      <div key={index}>
-                        {order.orderStatus.map((status: any, idx: number) => (
-                          <StatusCard
-                            key={idx}
-                            status={status.status}
-                            description={`Updated at: ${new Date(
-                              status.createdAt
-                            ).toLocaleString()}`}
-                            order={order.orderItems}
-                            orderId={order.orderId}
-                          />
-                        ))}
-                      </div>
-                    ))} */}
                     {orderData.map((order: any, index: number) => (
-                      <div key={index}>
-                        {order.statuses.map((status: any, idx: number) => (
-                          <StatusCard
-                            key={idx}
-                            status={status.status}
-                            description={`Updated at: ${new Date(
-                              status.created_at
-                            ).toLocaleString()}`}
-                            order={[]} // No `orderItems` in the provided data, setting to empty array
-                            orderId={order.id}
-                          />
+                      <div key={index} className="flex flex-col gap-2">
+                        {orderData.map((order: any, index: number) => (
+                          <div key={index}>
+                            {order.statuses.length > 0 && (
+                              <StatusCard
+                                key={order.statuses.length - 1} // Use the last status
+                                status={
+                                  order.statuses[order.statuses.length - 1]
+                                    .status
+                                }
+                                description={`Updated at: ${new Date(
+                                  order.statuses[
+                                    order.statuses.length - 1
+                                  ].created_at
+                                ).toLocaleString()}`}
+                                order={order.order_item}
+                                orderId={order.id}
+                              />
+                            )}
+                          </div>
                         ))}
                       </div>
                     ))}
                   </div>
                 </div>
-
-                {/* <div className="mt-8">
-                  <p className="text-white font-bold text-lg mb-2">History</p>
-                  <hr className="border border-white" />
-                </div>
-
-                <div className="mt-2">
-                  <div className="space-y-2">
-                    {orderData.history.map((order: any, index: number) => (
-                      <div key={index}>
-                        {order.orderStatus.map((status: any, idx: number) => (
-                          <StatusCard
-                            key={idx}
-                            status={status.status}
-                            description={`Updated at: ${new Date(
-                              status.createdAt
-                            ).toLocaleString()}`}
-                            order={order.orderItems}
-                            orderId={order.orderId}
-                          />
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                </div> */}
               </>
             )}
           </div>
