@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ReactNode, useState, useEffect } from "react";
+import React, { ChangeEvent, ReactNode, useState } from "react";
 import { InventoryContext, InventoryState } from "./InventoryContext";
 
 export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
