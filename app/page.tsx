@@ -216,7 +216,7 @@ const OrderDaily: React.FC = () => {
       {showWarning && (
         <div className="bg-yellow-300 text-yellow-900 p-4 text-center">
           <p>
-            This page is not optimized for larger screen. Please use a mobile phone 
+            This page is not optimized for larger screen. Please use a <span className="hidden">{isMobile}</span>mobile phone 
             for better experience.
           </p>
         </div>
