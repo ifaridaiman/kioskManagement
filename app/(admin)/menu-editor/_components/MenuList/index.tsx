@@ -6,7 +6,7 @@ import { LuPencilLine } from "react-icons/lu";
 import { MdOutlineDelete } from "react-icons/md";
 import { useMenuMaker } from "../../context/MenuMakerContext";
 import { useMenuList } from "./hooks/useMenuList";
-import { CiBoxList } from "react-icons/ci";
+import { CiBoxList, CiCamera } from "react-icons/ci";
 import Link from "next/link";
 
 interface MenuListProps {
@@ -14,7 +14,7 @@ interface MenuListProps {
 }
 
 const MenuList: React.FC<MenuListProps> = ({ onEditClick }) => {
-  const { handleClickShowUpdate } = useMenuMaker();
+  const { handleClickShowUpdate, handleClickShowUpload } = useMenuMaker();
   const {
     menus,
     isLoading,
@@ -23,7 +23,7 @@ const MenuList: React.FC<MenuListProps> = ({ onEditClick }) => {
     setTitle,
     handleNextPage,
     handlePrevPage,
-    deleteMenu
+    deleteMenu,
   } = useMenuList();
 
   return (
@@ -80,6 +80,15 @@ const MenuList: React.FC<MenuListProps> = ({ onEditClick }) => {
                     <Link href={`/inventory/${menu.id}`} title="Inventory List">
                       <CiBoxList />
                     </Link>
+                    <button
+                      onClick={() => {
+                        onEditClick(menu);
+                        handleClickShowUpload();
+                      }}
+                      title="Upload Image"
+                    >
+                      <CiCamera />
+                    </button>
                     <button onClick={() => deleteMenu(menu.id)} title="">
                       <MdOutlineDelete />
                     </button>

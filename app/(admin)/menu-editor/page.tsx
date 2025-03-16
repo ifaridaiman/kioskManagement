@@ -7,6 +7,7 @@ import HeaderTop from "@/components/Header/Top";
 import MenuUpdate from "./_components/MenuUpdate";
 import { useCategoryMaker } from "./context/CategoryMakerContext";
 import CategoryAdd from "./_components/CategoryAdd";
+import MenuUploadImage from "./_components/MenuUploadImage";
 
 interface MenuMaker {
   title: string;
@@ -14,14 +15,14 @@ interface MenuMaker {
 }
 
 interface MenuItem {
-  id: number;
+  id: string;
   title: string;
   description: string;
   price: number;
 }
 
 const MenuMaker = () => {
-  const { toggleShowAddMenuModal, showAddMenu, showUpdateMenuModal } =
+  const { toggleShowAddMenuModal, showAddMenu, showUpdateMenuModal, showUploadMenuModal, handleClickShowUpload } =
     useMenuMaker();
   const {
     toggleShowAddCategoryModal,
@@ -71,6 +72,7 @@ const MenuMaker = () => {
         />
       )}
       {showAddCategory && <CategoryAdd />}
+      {showUploadMenuModal && selectedMenu  &&  <MenuUploadImage menuId={selectedMenu.id} menuTitle={selectedMenu.title} toggleShowUpdateMenuModal={handleClickShowUpload}/> }
     </>
   );
 };

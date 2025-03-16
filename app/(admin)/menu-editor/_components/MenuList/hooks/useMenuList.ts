@@ -23,7 +23,7 @@ export const useMenuList = () => {
     }
   }, [page, limit, title]); // ✅ Dependencies to trigger re-fetch
 
-  const deleteMenu = async (id: number) => {
+  const deleteMenu = async (id: string) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this menu?");
     if (!confirmDelete) return;
 

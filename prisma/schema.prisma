@@ -117,19 +117,20 @@ model menu_categories {
 }
 
 model menu_inventories {
-  id            String      @id @db.Uuid
-  menu_id       String      @db.Uuid
-  order_type_id String      @db.Uuid
+  id            String        @id @db.Uuid
+  menu_id       String        @db.Uuid
+  order_type_id String        @db.Uuid
   quantity      Int
-  start_date    DateTime?   @db.Timestamp(0)
-  end_date      DateTime?   @db.Timestamp(0)
-  start_time    DateTime?   @db.Time(0)
-  end_time      DateTime?   @db.Time(0)
-  created_at    DateTime?   @db.Timestamp(0)
-  updated_at    DateTime?   @db.Timestamp(0)
-  deleted_at    DateTime?   @db.Timestamp(0)
-  menus         menus       @relation(fields: [menu_id], references: [id], onDelete: Cascade, map: "menu_inventories_menu_id_foreign")
-  order_types   order_types @relation(fields: [order_type_id], references: [id], onDelete: Cascade, map: "menu_inventories_order_type_id_foreign")
+  start_date    DateTime?     @db.Timestamp(0)
+  end_date      DateTime?     @db.Timestamp(0)
+  start_time    DateTime?     @db.Time(0)
+  end_time      DateTime?     @db.Time(0)
+  created_at    DateTime?     @db.Timestamp(0)
+  updated_at    DateTime?     @db.Timestamp(0)
+  deleted_at    DateTime?     @db.Timestamp(0)
+  menus         menus         @relation(fields: [menu_id], references: [id], onDelete: Cascade, map: "menu_inventories_menu_id_foreign")
+  order_types   order_types   @relation(fields: [order_type_id], references: [id], onDelete: Cascade, map: "menu_inventories_order_type_id_foreign")
+  order_items   order_items[]
 }
 
 model menus {
@@ -154,15 +155,17 @@ model migrations {
 }
 
 model order_items {
-  id         String    @id @db.Uuid
-  order_id   String    @db.Uuid
-  menu_id    String    @db.Uuid
-  quantity   Int
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
-  deleted_at DateTime? @db.Timestamp(0)
-  menus      menus     @relation(fields: [menu_id], references: [id], onDelete: Cascade, map: "order_items_menu_id_foreign")
-  orders     orders    @relation(fields: [order_id], references: [id], onDelete: Cascade, map: "order_items_order_id_foreign")
+  id                String            @id @db.Uuid
+  order_id          String            @db.Uuid
+  menu_id           String            @db.Uuid
+  quantity          Int
+  created_at        DateTime?         @db.Timestamp(0)
+  updated_at        DateTime?         @db.Timestamp(0)
+  deleted_at        DateTime?         @db.Timestamp(0)
+  menu_inventory_id String?           @db.Uuid
+  menus             menus             @relation(fields: [menu_id], references: [id], onDelete: Cascade, map: "order_items_menu_id_foreign")
+  menu_inventories  menu_inventories? @relation(fields: [menu_inventory_id], references: [id], onDelete: Cascade, map: "order_items_menu_inventory_id_foreign")
+  orders            orders            @relation(fields: [order_id], references: [id], onDelete: Cascade, map: "order_items_order_id_foreign")
 }
 
 model order_statuses {

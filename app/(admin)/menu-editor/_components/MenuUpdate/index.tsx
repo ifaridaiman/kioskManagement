@@ -3,7 +3,7 @@ import { useMenuMaker } from "../../context/MenuMakerContext";
 import { IoMdClose } from "react-icons/io";
 
 interface MenuUpdateProps {
-  id: number;
+  id: string;
   title: string;
   description: string;
   price: number;

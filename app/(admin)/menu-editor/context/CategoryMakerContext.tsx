@@ -25,7 +25,7 @@ interface CategoryMakerContextProps {
   ) => void;
   handleClickShowUpdate: () => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  handleUpdate: (id: number, e: FormEvent<HTMLFormElement>) => void;
+  handleUpdate: (id: string, e: FormEvent<HTMLFormElement>) => void;
 }
 
 // Create the context
@@ -89,7 +89,7 @@ export const CategoryMakerProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const handleUpdate = async (
-    id: number,
+    id: string,
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();

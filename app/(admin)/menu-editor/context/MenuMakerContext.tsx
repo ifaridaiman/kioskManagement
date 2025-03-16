@@ -9,11 +9,10 @@ import React, {
 
 // Define the shape of the context
 interface MenuState {
-  category: string;
+  menu_category_id: string;
   title: string;
   description: string;
   price: number;
-  
 }
 
 interface MenuMakerContextProps {
@@ -21,14 +20,16 @@ interface MenuMakerContextProps {
   setState: React.Dispatch<React.SetStateAction<MenuState>>;
   showAddMenu: boolean;
   showUpdateMenuModal: boolean;
+  showUploadMenuModal: boolean; // ✅ Upload modal state
   toggleShowAddMenuModal: () => void;
   toggleShowUpdateMenuModal: () => void;
   handleChange: (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => void;
   handleClickShowUpdate: () => void;
+  handleClickShowUpload: () => void; // ✅ New function for upload modal
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  handleUpdate: (id: number,e: FormEvent<HTMLFormElement>) => void;
+  handleUpdate: (id: string, e: FormEvent<HTMLFormElement>) => void;
 }
 
 // Create the context
@@ -41,7 +42,7 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [state, setState] = useState<MenuState>({
-    category: "",
+    menu_category_id: "",
     title: "",
     description: "",
     price: 0,
@@ -50,6 +51,8 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
   const [showAddMenu, setShowAddMenu] = useState<boolean>(false);
   const [showUpdateMenuModal, setShowUpdateMenuModal] =
     useState<boolean>(false);
+  const [showUploadMenuModal, setShowUploadMenuModal] =
+    useState<boolean>(false); // ✅ Upload modal state
 
   const toggleShowAddMenuModal = () => {
     setShowAddMenu((prev) => !prev);
@@ -71,7 +74,6 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus`, {
@@ -95,7 +97,7 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const handleUpdate = async (
-    id: number,
+    id: string,
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
@@ -119,24 +121,28 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
       console.error("Failed to update menu:", error);
       alert("An unexpected error occurred.");
     } finally {
-      setState({ category:"",title: "", description: "", price: 0 });
+      setState({ menu_category_id: "", title: "", description: "", price: 0 });
     }
   };
-  
+
   const handleClickShowUpdate = () => {
     if (showUpdateMenuModal) {
       // If toggling off, reset the state to default values
-      setState({ category: "",title: "", description: "", price: 0 });
+      setState({ menu_category_id: "", title: "", description: "", price: 0 });
     } else {
       // If toggling on, prefill the form with the current card's values
       setState((prevState) => ({
-        category: prevState.category,
+        menu_category_id: prevState.menu_category_id,
         title: prevState.title,
         description: prevState.description,
         price: prevState.price,
       }));
     }
     setShowUpdateMenuModal(!showUpdateMenuModal); // Toggle the state
+  };
+
+  const handleClickShowUpload = () => {
+    setShowUploadMenuModal((prev) => !prev);
   };
 
   return (
@@ -146,9 +152,11 @@ export const MenuMakerProvider: React.FC<{ children: ReactNode }> = ({
         setState,
         showAddMenu,
         showUpdateMenuModal,
+        showUploadMenuModal,
         toggleShowAddMenuModal,
         toggleShowUpdateMenuModal,
         handleClickShowUpdate,
+        handleClickShowUpload,
         handleChange,
         handleSubmit,
         handleUpdate,

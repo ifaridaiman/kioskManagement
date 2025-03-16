@@ -41,7 +41,17 @@ export async function POST(request: NextRequest) {
                             select: {
                                 title: true,
                             }
-                        }
+                        },
+                        menu_assets: {
+                            select: {
+                                asset_path: true,
+                                created_at: true, // ✅ Fetch creation date to determine the latest
+                            },
+                            orderBy: {
+                                created_at: "desc", // ✅ Sort by latest first
+                            },
+                            take: 1,
+                        },
                     }
                 }
             },
@@ -135,6 +145,7 @@ export async function POST(request: NextRequest) {
                         description: string;
                     };
                 }[];
+
             }[];
         }[] = inventories.reduce((categories, inventory) => {
             if (!inventory.menus) return categories;
@@ -142,12 +153,16 @@ export async function POST(request: NextRequest) {
             // Extract category title
             const categoryTitle = inventory.menus.menu_categories?.title || "Unknown";
 
+            const latestAsset = inventory.menus.menu_assets.length > 0
+                ? inventory.menus.menu_assets[0].asset_path
+                : null; // If no asset, return null
             // Create menu item
             const menuItem = {
                 id: inventory.menu_id,
                 title: inventory.menus?.title || "Unknown",
                 description: inventory.menus?.description || "No description",
                 price: inventory.menus?.price?.toString() || "0",
+                image_url: latestAsset,
                 inventory: [
                     {
                         inventory_id: inventory.id,

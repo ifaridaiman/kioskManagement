@@ -11,7 +11,7 @@ const InventoryAdd: React.FC<InventoryAddProps> = ({ menuId, refreshInventories 
   const { state, handleChange, toggleShowAddInventoryModal } = useInventory();
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [orderTypes, setOrderTypes] = useState<{ id: number; name: string }[]>([]);
+  const [orderTypes, setOrderTypes] = useState<{ id: string; name: string }[]>([]);
   const [fetchingOrderTypes, setFetchingOrderTypes] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
