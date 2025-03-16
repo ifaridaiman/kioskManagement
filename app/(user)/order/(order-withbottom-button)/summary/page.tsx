@@ -5,11 +5,25 @@ import { CiDeliveryTruck } from "react-icons/ci";
 import { BsArrowLeft } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 
 const SummaryPage = () => {
+  const router = useRouter();
   const { orders, customerDetails } = useSelector(
     (state: RootState) => state.order
   );
+
+  const orderCount = useSelector(
+    (state: RootState) => state.order.orders.length
+  );
+
+  useEffect(() => {
+    if (orderCount === 0) {
+      router.push("/");
+    }
+  }, [orderCount, router]);
   return (
     <div className="mt-4 h-screen px-4">
       <p className="font-semibold text-xl ">Summary</p>

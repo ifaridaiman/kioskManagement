@@ -31,6 +31,16 @@ const CustomerDetail: React.FC = () => {
     (state: RootState) => state.order.customerDetails
   );
 
+  const orderCount = useSelector(
+    (state: RootState) => state.order.orders.length
+  );
+
+  useEffect(() => {
+    if (orderCount === 0) {
+      router.push("/");
+    }
+  }, [orderCount, router]);
+
   const {
     register,
     handleSubmit,
