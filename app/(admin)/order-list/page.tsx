@@ -22,13 +22,13 @@ const OrderList: React.FC = () => {
     const fetchOrders = async () => {
       try {
         setLoading(true);
-        const query = statusFilter ? `&orderStatus=${statusFilter}` : ""; // ✅ Properly apply filter
+        const query = statusFilter !== "" ? `&orderStatus=${statusFilter}` : ""; // ✅ Properly apply filter
         const response = await fetch(
           `/api/orders/list?page=${page}&limit=${limit}${query}`
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch orders.");
+          throw new Error("No orders found.");
         }
 
         const result: OrdersApiResponse = await response.json();
@@ -43,6 +43,8 @@ const OrderList: React.FC = () => {
 
     fetchOrders();
   }, [statusFilter, page]); // ✅ Re-fetch when filter or page changes
+
+  
 
   const handleUpdate = (updatedOrder: Partial<Order>) => {
     setOrders((prevOrders) =>

@@ -16,6 +16,8 @@ import {
 import { clearOrder } from "@/store/slice/orderSlice";
 
 const OrderDaily: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const activeTab = useSelector(
     (state: RootState) => state.navigation.activeId
   );
@@ -30,6 +32,26 @@ const OrderDaily: React.FC = () => {
   const [pendingDate, setPendingDate] = useState<string | null>(null); // Temporary state for the new date
 
   const dispatch = useDispatch();
+  // Detect screen size and set state
+  useEffect(() => {
+    const checkScreenSize = () => {
+      if (window.innerWidth <= 768) {
+        setIsMobile(true);
+        setShowWarning(false);
+      } else {
+        setIsMobile(false);
+        setShowWarning(true);
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => {
+      window.removeEventListener("resize", checkScreenSize);
+    };
+  }, []);
+
   useEffect(() => {
     const fetchOrderTypes = async () => {
       try {
@@ -80,11 +102,10 @@ const OrderDaily: React.FC = () => {
 
   useEffect(() => {
     if (!selectedDate) return; // ✅ Wait for a valid selected date before fetching menus
+    setIsLoadingMenus(true);
 
     const fetchMenus = async () => {
       try {
-        setIsLoadingMenus(true);
-
         const response = await fetch(`/api/menus/list`, {
           method: "POST",
           headers: {
@@ -151,7 +172,9 @@ const OrderDaily: React.FC = () => {
           {isLoadingMenus && <p>Loading menus...</p>}
           <div className="flex flex-col">
             {isLoadingAvailableDate && <p>Loading available date...</p>}
-            <label className="font-semibold mb-2" htmlFor="pickupDate">Pickup Date</label>
+            <label className="font-semibold mb-2" htmlFor="pickupDate">
+              Pickup Date
+            </label>
             <select
               className="border p-2 rounded bg-white"
               name="pickupDate"
@@ -190,53 +213,63 @@ const OrderDaily: React.FC = () => {
 
   return (
     <>
-      <div className="md:max-w-80 mx-auto">
-        <div className="flex flex-col h-screen">
-          {isLoadingTabs && <p>Loading tabs...</p>}
-          <TabsContainer tabs={tabs} activeTab={activeTab} />
-          <div className="sticky bottom-0 z-10 bg-white w-full border-t px-4 py-4">
-            <Link
-              href={"/order/customer-detail"}
-              className={`bg-primary text-white p-4 rounded-xl flex justify-between items-center w-full ${
-                orderCount === 0 ? "pointer-events-none opacity-50" : ""
-              }`}
-            >
-              <div className="flex justify-center items-center">
-                <span className="font-bold">Basket</span>
-                <span className="ml-2 text-white p-1 rounded-full">
-                  {orderCount} items
-                </span>
-              </div>
-              <span className="font-bold">RM {totalPrice.toFixed(2)}</span>
-            </Link>
-          </div>
+      {showWarning && (
+        <div className="bg-yellow-300 text-yellow-900 p-4 text-center">
+          <p>
+            This page is not optimized for larger screen. Please use a mobile phone 
+            for better experience.
+          </p>
         </div>
-      </div>
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <p className="text-lg font-semibold">Confirm Tab Change</p>
-            <p className="text-gray-600 mt-2">
-              Switching pickup date will remove all selected orders. Are you
-              sure?
-            </p>
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                className="px-4 py-2 bg-gray-300 rounded"
-                onClick={() => setShowModal(false)}
+      )}
+      <div className="md:hidden">
+        <div className="md:max-w-80 mx-auto">
+          <div className="flex flex-col h-screen">
+            {isLoadingTabs && <p>Loading tabs...</p>}
+            <TabsContainer tabs={tabs} activeTab={activeTab} />
+            <div className="sticky bottom-0 z-10 bg-white w-full border-t px-4 py-4">
+              <Link
+                href={"/order/customer-detail"}
+                className={`bg-primary text-white p-4 rounded-xl flex justify-between items-center w-full ${
+                  orderCount === 0 ? "pointer-events-none opacity-50" : ""
+                }`}
               >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-red-600 text-white rounded"
-                onClick={handleConfirmDateChange}
-              >
-                Confirm
-              </button>
+                <div className="flex justify-center items-center">
+                  <span className="font-bold">Basket</span>
+                  <span className="ml-2 text-white p-1 rounded-full">
+                    {orderCount} items
+                  </span>
+                </div>
+                <span className="font-bold">RM {totalPrice.toFixed(2)}</span>
+              </Link>
             </div>
           </div>
         </div>
-      )}
+        {showModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+              <p className="text-lg font-semibold">Confirm Tab Change</p>
+              <p className="text-gray-600 mt-2">
+                Switching pickup date will remove all selected orders. Are you
+                sure?
+              </p>
+              <div className="mt-4 flex justify-end gap-2">
+                <button
+                  className="px-4 py-2 bg-gray-300 rounded"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-4 py-2 bg-red-600 text-white rounded"
+                  onClick={handleConfirmDateChange}
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 };
