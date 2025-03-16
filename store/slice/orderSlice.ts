@@ -5,6 +5,7 @@ interface MenuItem {
     name: string;
     quantity: number;
     price: number;
+    inventoryId: string;
 }
 
 interface CustomerDetails {

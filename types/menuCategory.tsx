@@ -20,6 +20,7 @@ export interface MenuItem {
 }
 
 export interface InventoryItem {
+  inventory_id: string;
   quantity: number;
   start_date: string | null;
   end_date: string | null;

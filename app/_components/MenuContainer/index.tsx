@@ -43,7 +43,7 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
                 : item.title === "Serunding"
                 ? "/assets/upload/menu/chicken-floss.jpg"
                 : "/assets/upload/menu/noImage.jpeg";
-                console.log("MenuContainer Menu:", menu);
+                console.log("MenuContainer Menu:", menu.inventory[0]);
               return(
               <MenuCard
                 key={menu.id}
@@ -57,6 +57,7 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
                 imageUrl={menu.image_url || imageUrl}
                 description={menu.description}
                 category={item.title}
+                inventoryId={menu.inventory[0].inventory_id || ""}
               />
             )})}
           </div>

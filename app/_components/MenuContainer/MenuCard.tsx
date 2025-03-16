@@ -21,6 +21,7 @@ interface MenuCardProps {
   imageUrl: string;
   description: string;
   category: string;
+  inventoryId: string;
 }
 
 const MenuCard: React.FC<MenuCardProps> = ({
@@ -31,6 +32,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
   stocks,
   imageUrl,
   category,
+  inventoryId
 }) => {
   console.log(
     `Rendering MenuCard: ${name}, Price: ${price}, Stocks: ${stocks}`
@@ -63,7 +65,6 @@ const MenuCard: React.FC<MenuCardProps> = ({
           <div className="flex flex-col gap-2 p-4 w-full">
             <div className="flex flex-col gap-1">
               <p className="text-base font-bold">{name}</p>
-
               {stocks > 0 ? (
                 <p className="text-sm text-gray-500">Stocks: {stocks}</p>
               ) : (
@@ -94,7 +95,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
                 <GoPlusCircle
                   className="w-6 h-6 text-primary"
                   onClick={() =>
-                    dispatch(addOrder({ id, name, price, quantity: 1 }))
+                    dispatch(addOrder({ id, name, price, quantity: 1, inventoryId }))
                   }
                 />
               )}
@@ -121,6 +122,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
             imageUrl || "/assets/upload/menu/noImage.jpeg"
           }
           description={description}
+          inventoryId={inventoryId}
         />
       )}
     </>
@@ -135,6 +137,7 @@ interface MenuDetailProps {
   imageUrl: string;
   stocks: number;
   onClose: () => void;
+  inventoryId: string;
 }
 
 const MenuDetail: React.FC<MenuDetailProps> = ({
@@ -145,6 +148,7 @@ const MenuDetail: React.FC<MenuDetailProps> = ({
   imageUrl,
   stocks,
   onClose,
+  inventoryId
 }) => {
   const dispatch = useDispatch();
   const order = useSelector((state: RootState) =>
@@ -156,7 +160,7 @@ const MenuDetail: React.FC<MenuDetailProps> = ({
   const increaseQuantity = () => {
     if (count < stocks) {
       if (count === 0) {
-        dispatch(addOrder({ id, name, price, quantity: 1 }));
+        dispatch(addOrder({ id, name, price, quantity: 1, inventoryId }));
       } else {
         dispatch(updateQuantity({ id, quantity: count + 1 }));
       }
