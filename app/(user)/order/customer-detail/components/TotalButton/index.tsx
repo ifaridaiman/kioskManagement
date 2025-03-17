@@ -78,7 +78,7 @@ const TotalButton: React.FC = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to process the order.");
+        throw new Error("Failed to process the order. Please Refresh and Reorder.");
       }
 
       const data: OrderResponse = await response.json();

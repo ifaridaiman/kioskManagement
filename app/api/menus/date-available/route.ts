@@ -3,8 +3,8 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST() {
     try {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const now = new Date(); // Current date and time
+        now.setSeconds(0, 0);  // Remove seconds and milliseconds for precision
 
         // Fetch distinct dates from menu_inventories where quantity is greater than 0
         const inventories = await prisma.menu_inventories.findMany({
@@ -18,11 +18,11 @@ export async function POST() {
             },
         });
 
-        // Extract and filter unique dates that are today or in the future
+        // Extract and filter unique dates that are today or in the future considering time
         const uniqueDates = new Set();
 
         inventories.forEach(({ end_date }) => {
-            if (end_date && new Date(end_date) >= today) {
+            if (end_date && new Date(end_date) >= now) {
                 uniqueDates.add(end_date.toISOString().split('T')[0]);
             }
         });
