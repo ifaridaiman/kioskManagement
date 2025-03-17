@@ -10,9 +10,9 @@ const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     <MenuMakerProvider>
       <CategoryMakerProvider>
       <InventoryProvider>
-        <div className="bg-slate-50 h-screen">
+        <div className="bg-slate-50 h-auto">
           <NavbarAdmin />
-          <div className="min-w-80 max-w-7xl mx-auto ">{children}</div>
+          <div className="min-w-80 max-w-7xl mx-auto pb-16">{children}</div>
         </div>
       </InventoryProvider>
       </CategoryMakerProvider>

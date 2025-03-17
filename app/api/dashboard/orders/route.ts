@@ -1,26 +1,33 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    // ✅ Get the current date in GMT+8
-    const now = new Date();
-    const offset = 4 * 60 * 60 * 1000; // ✅ GMT+4 offset in milliseconds
+    // ✅ Extract the `date` query param (Expected format: YYYY-MM-DD)
+    const { searchParams } = new URL(request.url);
+    const selectedDate = searchParams.get("date");
 
-    const today = new Date(now.getTime() + offset);
-    today.setHours(0, 0, 0, 0); // ✅ Start of today in GMT+8
+    // ✅ If `date` param exists, use it; otherwise, default to today's date
+    const targetDate = selectedDate ? new Date(selectedDate) : new Date();
+    targetDate.setHours(0, 0, 0, 0); // ✅ Start of selected day (ignoring time)
 
-    const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000); // ✅ Start of tomorrow in GMT+8
+    // ✅ Convert to YYYY-MM-DD format for comparison
+    const formattedDate = targetDate.toISOString().split("T")[0];
 
-    // ✅ Convert to UTC for Prisma query
-    const todayUTC = today.toISOString();
-    const tomorrowUTC = tomorrow.toISOString();
+    console.log(`Fetching orders for end_date: ${formattedDate}`);
 
+    // ✅ Fetch orders where any `menu_inventories.end_date` matches the selected date
     const orders = await prisma.orders.findMany({
       where: {
-        created_at: {
-          gte: todayUTC, // ✅ Orders created at or after today (GMT+8)
-          lt: tomorrowUTC, // ✅ Orders before tomorrow (GMT+8)
+        order_items: {
+          some: {
+            menu_inventories: {
+              end_date: {
+                gte: new Date(`${formattedDate}T00:00:00.000Z`), // Start of the selected date
+                lt: new Date(`${formattedDate}T23:59:59.999Z`),  // End of the selected date
+              },
+            },
+          },
         },
         deleted_at: null, // ✅ Exclude soft-deleted orders
       },
@@ -35,6 +42,7 @@ export async function GET() {
         order_items: {
           include: {
             menus: { select: { id: true, title: true, price: true } },
+            menu_inventories: { select: { end_date: true } },
           },
         },
       },
@@ -42,13 +50,13 @@ export async function GET() {
 
     return NextResponse.json(
       {
-        message: "Orders for today retrieved successfully (GMT+8).",
+        message: `Orders for ${formattedDate} retrieved successfully (based on end_date).`,
         data: orders,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching today's orders:", error);
+    console.error("Error fetching orders:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
