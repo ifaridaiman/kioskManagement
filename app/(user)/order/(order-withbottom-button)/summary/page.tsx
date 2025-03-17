@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
+import toast, { Toaster } from "react-hot-toast";
 
 const SummaryPage = () => {
   const router = useRouter();
@@ -18,7 +18,19 @@ const SummaryPage = () => {
   const orderCount = useSelector(
     (state: RootState) => state.order.orders.length
   );
-
+  const notify = () => {
+    navigator.clipboard.writeText("Last corner, Persiaran E1/1, Bandar Saujana Utama, 47000 Sungai Buloh, Selangor");
+  
+    toast("Copied our address to your clipboard. A new tab will open in 5 seconds.", {
+      icon: "👏",
+    });
+  
+    // ✅ Open new tab after 5 seconds (5000ms)
+    setTimeout(() => {
+      window.open("https://g.co/kgs/6E1c1GJ", "_blank");
+    }, 5000);
+  };
+  
   useEffect(() => {
     if (orderCount === 0) {
       router.push("/");
@@ -26,6 +38,7 @@ const SummaryPage = () => {
   }, [orderCount, router]);
   return (
     <div className="mt-4 h-screen px-4">
+      <Toaster />
       <p className="font-semibold text-xl ">Summary</p>
       <Link
         href="/order/customer-detail"
@@ -70,7 +83,9 @@ const SummaryPage = () => {
                     </div>
                     <div>
                       <p className="font-semibold text-primary">{order.name}</p>
-                      <p className="text-gray-400">Edit</p>
+                      <Link href={"/"} className="text-gray-400">
+                        Edit
+                      </Link>
                     </div>
                   </div>
                   <p className="font-semibold text-primary">
@@ -99,7 +114,10 @@ const SummaryPage = () => {
                     ? "Customer will pick up the order."
                     : "Customer needs to arrange their own delivery method."}
                 </p>
-                <p className="text-gray-50 font-semibold underline">
+                <p
+                  onClick={notify}
+                  className="text-gray-50 font-semibold underline"
+                >
                   Copy our Address
                 </p>
               </div>
@@ -122,7 +140,9 @@ const SummaryPage = () => {
                   ? "Cash on Delivery"
                   : "Online Payment"}
               </p>
-              <p className="text-gray-400">Edit</p>
+              <Link href={"/order/customer-detail"} className="text-gray-400">
+                Edit
+              </Link>
             </div>
           </div>
         </div>
