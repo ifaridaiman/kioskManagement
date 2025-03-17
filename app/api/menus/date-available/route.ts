@@ -16,6 +16,9 @@ export async function POST() {
             select: {
                 end_date: true,
             },
+            orderBy:{
+                end_date: 'asc'
+            }
         });
 
         // Extract and filter unique dates that are today or in the future considering time
