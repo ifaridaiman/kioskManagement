@@ -111,7 +111,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* ✅ Summary Boxes */}
-      <div className="border border-slate-200 rounded p-4 shadow-md shadow-slate-100 grid grid-cols-1 lg:grid-cols-4 gap-4">
+      {/* <div className="border border-slate-200 rounded p-4 shadow-md shadow-slate-100 grid grid-cols-1 lg:grid-cols-4 gap-4">
         {[
           "Total Orders",
           "Orders Processed",
@@ -126,7 +126,7 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* ✅ Orders List - Today & Tomorrow */}
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
