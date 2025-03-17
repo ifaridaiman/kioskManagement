@@ -7,24 +7,31 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const selectedDate = searchParams.get("date");
 
-    // ✅ If `date` param exists, use it; otherwise, default to today's date
+    // ✅ If `date` param exists, use it; otherwise, default to today in GMT+8
     const targetDate = selectedDate ? new Date(selectedDate) : new Date();
-    targetDate.setHours(0, 0, 0, 0); // ✅ Start of selected day (ignoring time)
+    
+    // ✅ Convert to GMT+8
+    const gmtOffset = 8 * 60; // GMT+8 in minutes
+    targetDate.setMinutes(targetDate.getMinutes() + gmtOffset);
 
-    // ✅ Convert to YYYY-MM-DD format for comparison
+    // ✅ Format as YYYY-MM-DD (After converting to GMT+8)
     const formattedDate = targetDate.toISOString().split("T")[0];
 
-    console.log(`Fetching orders for end_date: ${formattedDate}`);
+    console.log(`Fetching orders for GMT+8 end_date: ${formattedDate}`);
 
-    // ✅ Fetch orders where any `menu_inventories.end_date` matches the selected date
+    // ✅ Calculate the correct start and end time range for GMT+8
+    const startOfDay = new Date(Date.UTC(targetDate.getUTCFullYear(), targetDate.getUTCMonth(), targetDate.getUTCDate(), 0, 0, 0)); 
+    const endOfDay = new Date(Date.UTC(targetDate.getUTCFullYear(), targetDate.getUTCMonth(), targetDate.getUTCDate(), 23, 59, 59, 999)); 
+
+    // ✅ Fetch orders where any `menu_inventories.end_date` matches the selected date in GMT+8
     const orders = await prisma.orders.findMany({
       where: {
         order_items: {
           some: {
             menu_inventories: {
               end_date: {
-                gte: new Date(`${formattedDate}T00:00:00.000Z`), // Start of the selected date
-                lt: new Date(`${formattedDate}T23:59:59.999Z`),  // End of the selected date
+                gte: startOfDay, // Start of the day in GMT+8
+                lt: endOfDay,  // End of the day in GMT+8
               },
             },
           },
@@ -50,7 +57,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       {
-        message: `Orders for ${formattedDate} retrieved successfully (based on end_date).`,
+        message: `Orders for ${formattedDate} (GMT+8) retrieved successfully (based on end_date).`,
         data: orders,
       },
       { status: 200 }

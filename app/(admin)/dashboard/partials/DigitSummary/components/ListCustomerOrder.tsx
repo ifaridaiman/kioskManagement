@@ -1,16 +1,23 @@
 import React from "react";
 
 // ✅ Define Props Type
+// ✅ Define TypeScript Interfaces
+
 interface Menu {
   id: string;
   title: string;
   price: string;
 }
 
+interface MenuInventory {
+  end_date: string; // Added menu inventory with end date
+}
+
 interface OrderItem {
   id: string;
   quantity: number;
   menus: Menu;
+  menu_inventories: MenuInventory; // Added menu inventory reference
 }
 
 interface Customer {
@@ -32,6 +39,8 @@ interface Order {
   created_at: string;
   order_statuses: OrderStatus[];
   order_items: OrderItem[];
+  payment_method: string; // Added payment method
+  status: string; // Added overall order status
 }
 
 interface ListCustomerOrderProps {
@@ -60,7 +69,7 @@ const ListCustomerOrder: React.FC<ListCustomerOrderProps> = ({ orders }) => {
                   {order.id.slice(-6)}
                 </p>
                 <p className="text-gray-800 text-sm font-light">
-                  {new Date(order.created_at).toLocaleDateString("en-GB", {
+                  {new Date(order.order_items[0].menu_inventories.end_date).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "2-digit",
                     year: "numeric",
