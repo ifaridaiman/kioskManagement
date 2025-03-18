@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import { Order } from "../../types/order";
 
@@ -16,7 +16,9 @@ const OrderUpdateModal: React.FC<OrderUpdateModalProps> = ({
   onUpdate,
 }) => {
   const [status, setStatus] = useState(order?.status || "");
-  const [deliveryMethod, setDeliveryMethod] = useState(order?.delivery_method || "");
+  const [deliveryMethod, setDeliveryMethod] = useState(
+    order?.delivery_method || ""
+  );
 
   // ✅ Update local state when `order` changes
   useEffect(() => {
@@ -29,6 +31,29 @@ const OrderUpdateModal: React.FC<OrderUpdateModalProps> = ({
   // ✅ Handle submitting the update
   const handleSubmit = async () => {
     if (!order) return;
+
+    if (status === "ready_to_pickup") {
+      console.log('REady to email')
+      try {
+        const response = await fetch("/api/orders/customer-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: order.customer?.email,
+            orderNumber: order.id,
+            phoneNumber: order.customer?.phone_number,
+            address: order.customer?.address,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to Send Email.");
+        }
+      } catch (error) {
+        console.error("Error to send Email:", error);
+        alert("Failed to send Email.");
+      }
+    }
 
     try {
       const response = await fetch("/api/orders/list/update", {
@@ -86,10 +111,7 @@ const OrderUpdateModal: React.FC<OrderUpdateModalProps> = ({
 
         {/* Action Buttons */}
         <div className="flex justify-end gap-2">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 border rounded-md"
-          >
+          <button onClick={onClose} className="px-4 py-2 border rounded-md">
             Cancel
           </button>
           <button

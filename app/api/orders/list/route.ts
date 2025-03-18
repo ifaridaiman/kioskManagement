@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
           take: 1, // Only take the most recent status
         },
         customers: {
-          select: { id: true, name: true, email: true },
+          select: { id: true, name: true, email: true, address: true, phone_number: true },
         },
         order_items: {
           include: {

@@ -172,6 +172,12 @@ const OrderList: React.FC = () => {
                     <StatusPill status={order.status} />
                   </td>
                   <td className="py-2 px-4 text-center">
+                    {order.customer?.address }
+                  </td>
+                  <td className="py-2 px-4 text-center">
+                    {order.customer?.phone_number}
+                  </td>
+                  <td className="py-2 px-4 text-center">
                     {order.delivery_method === "pickup" ? "Pickup" : "Delivery"}
                   </td>
                   <td className="py-2 px-4 flex gap-2">
