@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
     // ✅ Fetch orders where any `menu_inventories.end_date` matches the selected date in GMT+8
     const orders = await prisma.orders.findMany({
       where: {
+        status: "Paid",
         order_items: {
           some: {
             menu_inventories: {

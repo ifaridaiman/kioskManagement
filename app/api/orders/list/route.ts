@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
   try {
     // Extract query parameters
     const { searchParams } = new URL(req.url);
-    const orderStatus = searchParams.get("orderStatus"); // Optional
+    const orderStatus = searchParams.get("orderStatus"); // Optional filter
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "10", 10);
 
@@ -14,30 +14,35 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Invalid pagination values" }, { status: 400 });
     }
 
-    // Get total count of orders (filtered by orderStatus if provided)
+    // Get total count of Paid orders (filtered by orderStatus if provided)
     const totalCount = await prisma.orders.count({
-      where: orderStatus
-        ? {
-          order_statuses: {
-            some: { status: orderStatus }, // Filter only if `orderStatus` is provided
-          },
-        }
-        : {},
+      where: {
+        deleted_at: null, // ✅ Exclude soft-deleted orders
+        status: "Paid", // ✅ Show only Paid orders
+        ...(orderStatus
+          ? {
+              order_statuses: {
+                some: { status: orderStatus }, // Apply status filter if provided
+              },
+            }
+          : {}),
+      },
     });
 
     // Calculate total pages
     const totalPages = Math.ceil(totalCount / limit);
 
-    // Fetch paginated orders with latest order status and menu details
+    // Fetch paginated Paid orders with latest order status and menu details
     const orders = await prisma.orders.findMany({
       where: {
         deleted_at: null, // ✅ Exclude soft-deleted orders
+        status: "Paid", // ✅ Show only Paid orders
         ...(orderStatus
           ? {
-            order_statuses: {
-              some: { status: orderStatus },
-            },
-          }
+              order_statuses: {
+                some: { status: orderStatus },
+              },
+            }
           : {}),
       },
       skip: (page - 1) * limit,
@@ -62,7 +67,7 @@ export async function GET(req: NextRequest) {
     if (orders.length === 0) {
       return NextResponse.json(
         {
-          message: "No orders found",
+          message: "No paid orders found",
           data: [],
           meta: { total: 0, page, limit, totalPages: 0 },
         },
