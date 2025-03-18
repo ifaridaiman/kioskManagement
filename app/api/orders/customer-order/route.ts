@@ -23,7 +23,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 
         // Generate WhatsApp Link
         const orderLink = `https://lemangtul.naisu.my/order/${phoneNumber}/${orderNumber}`;
-        const message = `Terima kasih kerana membeli lemangtul, sila hantar di alamat ${address}. Order saya adalah ${orderLink}`;
+        const message = `Terima kasih kerana membeli lemangtul, Alamat penghantaran adalah ke alamat ${address}. Order saya adalah ${orderLink}`;
         const encodedMessage = encodeURIComponent(message);
         const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
@@ -45,7 +45,7 @@ export async function POST(req: Request): Promise<NextResponse> {
             subject: "Your Order is Ready for Pickup",
             html: `
                 <p>Dear Customer,</p>
-                <p>Your order <strong>${orderNumber}</strong> is ready for pickup.</p>
+                <p>Your order <strong>${orderNumber.slice(-6)}</strong> is ready for pickup.</p>
                 <p>You can pick it up at our stall, or you can request delivery.</p>
                 <p><strong>Delivery Address:</strong> ${address}</p>
                 <p>To confirm delivery via WhatsApp, click the button below:</p>

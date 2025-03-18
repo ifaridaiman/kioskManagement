@@ -11,6 +11,7 @@ interface OrderItem {
 
 // Define types for the entire order response
 interface OrderResponse {
+  name: string;
   orderNumber: string;
   phoneNumber: string;
   address: string;
@@ -44,7 +45,9 @@ const OrderDetailsPage: React.FC = () => {
         });
 
         if (!response.ok) {
-          throw new Error(`Error ${response.status}: Unable to fetch order details`);
+          throw new Error(
+            `Error ${response.status}: Unable to fetch order details`
+          );
         }
 
         const data: OrderResponse = await response.json();
@@ -74,8 +77,14 @@ const OrderDetailsPage: React.FC = () => {
         <div className="p-6">
           {/* Order Details */}
           <div className="mb-4">
+            <p className="text-lg font-semibold text-gray-800">
+              Customer Name:
+            </p>
+            <p className="text-gray-600">{order?.name}</p>
+          </div>
+          <div className="mb-4">
             <p className="text-lg font-semibold text-gray-800">Order Number:</p>
-            <p className="text-gray-600">{order?.orderNumber}</p>
+            <p className="text-gray-600">{order?.orderNumber.slice(-6)}</p>
           </div>
           <div className="mb-4">
             <p className="text-lg font-semibold text-gray-800">Phone Number:</p>
@@ -84,7 +93,9 @@ const OrderDetailsPage: React.FC = () => {
 
           {/* Delivery Address */}
           <div className="mb-4">
-            <p className="text-lg font-semibold text-gray-800">Delivery Address:</p>
+            <p className="text-lg font-semibold text-gray-800">
+              Delivery Address:
+            </p>
             <p className="text-gray-600 leading-relaxed">{order?.address}</p>
           </div>
 

@@ -16,6 +16,7 @@ interface OrderItem {
 }
 
 interface OrderResponse {
+    name: string;
     orderNumber: string;
     phoneNumber: string;
     address: string;
@@ -77,6 +78,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 
         // Create a type-safe response
         const responseData: OrderResponse = {
+            name: customer.name,
             orderNumber: order.id,
             phoneNumber: customer.phone_number,
             address: customer.address,
