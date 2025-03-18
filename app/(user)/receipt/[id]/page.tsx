@@ -37,9 +37,8 @@ const ReceiptPage = () => {
         }
 
         setIsValidId(true);
-      } catch (error) {
+      } catch {
         setIsValidId(false);
-        setErrorMessage((error as Error).message);
       }
     };
 
