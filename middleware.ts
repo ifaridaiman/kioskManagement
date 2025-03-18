@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/', '/coming-soon','/order(.*)','/customer-detail','/receipt/(.*)'])
 const isAdminRoute = createRouteMatcher(['/dashboard','/menu-editor','/order-list','/inventory(.*)', '/setting'])
-const isStaffRoute = createRouteMatcher(['/kiosk-order'])
+const isStaffRoute = createRouteMatcher(['/kiosk-order','/delivery-order'])
 
 export default clerkMiddleware(async (auth, request) => {
   if(isAdminRoute(request) && (await auth()).sessionClaims?.metadata?.role !== 'admin'){
