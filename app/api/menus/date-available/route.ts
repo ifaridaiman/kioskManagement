@@ -11,6 +11,11 @@ export async function POST() {
         const gmt8Now = new Date(now.getTime() + 8 * 60 * 60 * 1000);
         const todayString = gmt8Now.toISOString().split("T")[0]; // Format: YYYY-MM-DD
 
+        // Check if the current time in GMT+8 is past 3 PM
+        const currentHourGmt8 = gmt8Now.getUTCHours(); // Extract GMT+8 hours (0-23)
+        const isPast3PM = currentHourGmt8 >= 15; // 15:00 in 24-hour format
+
+
         // Fetch distinct dates from menu_inventories where quantity is greater than 0
         const inventories = await prisma.menu_inventories.findMany({
             where: {
@@ -32,9 +37,10 @@ export async function POST() {
                 const inventoryDateString = inventoryDate.toISOString().split("T")[0]; // Get only YYYY-MM-DD
 
                 // Include only today or future dates in GMT+8
-                if (inventoryDateString >= todayString) {
+                if (inventoryDateString > todayString || (!isPast3PM && inventoryDateString === todayString)) {
                     uniqueDates.add(inventoryDateString);
                 }
+
             }
         });
 
