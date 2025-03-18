@@ -10,8 +10,7 @@ import InventoryAdd from "./components/InventoryAdd";
 const Inventory = () => {
   const params = useParams();
   const menuId = params?.id as string;
-
-  const { inventories, menuName, isLoading, refreshInventories, deleteInventory } = useInventoryList(menuId);
+  const { inventories, menuName, isLoading, refreshInventories, deleteInventory, currentPage, setCurrentPage, totalPages } = useInventoryList(menuId);
   const { toggleShowAddInventoryModal, showAddInventory } = useInventory();
 
   return (
@@ -30,7 +29,9 @@ const Inventory = () => {
           </div>
         </HeaderTop>
         <hr className="mb-4" />
-        <InventoryList inventories={inventories} isLoading={isLoading} deleteInventory={deleteInventory} />
+        <InventoryList inventories={inventories} isLoading={isLoading} deleteInventory={deleteInventory} currentPage={currentPage}
+  setCurrentPage={setCurrentPage}
+  totalPages={totalPages} />
       </div>
       {showAddInventory && <InventoryAdd menuId={menuId} refreshInventories={refreshInventories} />}
     </>

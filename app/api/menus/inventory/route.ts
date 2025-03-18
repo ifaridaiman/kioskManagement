@@ -37,6 +37,9 @@ export async function GET(req: NextRequest) {
       where: { menu_id: menuId, deleted_at: null },
       skip: (page - 1) * limit,
       take: limit,
+      orderBy: {
+        end_date: 'asc'
+      },
       include: {
         order_types: true, // Include order type details
       },
