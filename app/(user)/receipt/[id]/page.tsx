@@ -14,12 +14,11 @@ const mrsSaintDelafield = Mrs_Saint_Delafield({
 const ReceiptPage = () => {
   const { id } = useParams(); // Extract ID from URL
   const [isValidId, setIsValidId] = useState<boolean | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id || typeof id !== "string" || id === "failed") {
       setIsValidId(false);
-      setErrorMessage("Invalid order ID. Please contact support.");
+
       return;
     }
 
@@ -71,22 +70,39 @@ const ReceiptPage = () => {
                 </p>
               </>
             ) : (
-              <>
+              <div className="text-center">
                 <p className="text-5xl text-white font-semibold">Contact Us</p>
                 <p className="text-base text-white font-light mt-2">
-                  {errorMessage || "There was an issue with your order. Please contact us for assistance."}
+                  There was an issue with your order.
                 </p>
-              </>
+                <p className="text-base text-white font-light mt-2">
+                  Please contact support at 0162959474
+                </p>
+                <p className="text-base text-white font-light mt-2 mb-8">
+                  or click this link
+                </p>
+                <a
+                  className="text-xl text-black bg-white p-4 m-4 rounded"
+                  href="https://wa.me/60162959474?text=I%20have%20issue%20with%20my%20Lemangtul%20order%2C%20please%20help%20me.
+"
+                  target="_blank"
+                >
+                  Report Link
+                </a>
+              </div>
             )}
           </div>
-          <div className="text-center mt-12">
-            <p className="text-base text-slate-50 font-light capitalize">
-              Tulus Ikhlas
-            </p>
-            <p className="text-base text-slate-50 font-light capitalize">
-              Dari Lemangtul
-            </p>
-          </div>
+          {isValidId && (
+            <div className="text-center mt-12">
+              <p className="text-base text-slate-50 font-light capitalize">
+                Tulus Ikhlas
+              </p>
+              <p className="text-base text-slate-50 font-light capitalize">
+                Dari Lemangtul
+              </p>
+            </div>
+          )}
+
           <div className="mt-20">
             <Image
               src="/assets/logo/static/lemangtul_logo_white.svg"
