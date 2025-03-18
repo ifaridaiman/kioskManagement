@@ -1,44 +1,53 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function POST() {
     try {
-        const now = new Date(); // Current date and time
-        now.setSeconds(0, 0);  // Remove seconds and milliseconds for precision
+        // Get current date in UTC and shift to GMT+8
+        const now = new Date();
+        now.setUTCHours(0, 0, 0, 0); // Reset time to UTC midnight
+
+        // Convert `now` to GMT+8
+        const gmt8Now = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+        const todayString = gmt8Now.toISOString().split("T")[0]; // Format: YYYY-MM-DD
 
         // Fetch distinct dates from menu_inventories where quantity is greater than 0
         const inventories = await prisma.menu_inventories.findMany({
             where: {
-                quantity: {
-                    gt: 0
-                },
+                quantity: { gt: 0 },
             },
             select: {
                 end_date: true,
             },
-            orderBy:{
-                end_date: 'asc'
-            }
+            orderBy: { end_date: "asc" },
         });
 
-        // Extract and filter unique dates that are today or in the future considering time
-        const uniqueDates = new Set();
+        // Extract and filter unique dates in GMT+8
+        const uniqueDates = new Set<string>();
 
         inventories.forEach(({ end_date }) => {
-            if (end_date && new Date(end_date) >= now) {
-                uniqueDates.add(end_date.toISOString().split('T')[0]);
+            if (end_date) {
+                // Convert `end_date` (UTC) to GMT+8
+                const inventoryDate = new Date(end_date.getTime() + 8 * 60 * 60 * 1000);
+                const inventoryDateString = inventoryDate.toISOString().split("T")[0]; // Get only YYYY-MM-DD
+
+                // Include only today or future dates in GMT+8
+                if (inventoryDateString >= todayString) {
+                    uniqueDates.add(inventoryDateString);
+                }
             }
         });
 
         return NextResponse.json({
             status: "success",
-            data: Array.from(uniqueDates).map(date => ({ date }))
+            data: Array.from(uniqueDates).map(date => ({ date })),
         }, { status: 200 });
+
     } catch (error) {
-        console.error('Error fetching inventory dates:', error);
+        console.error("Error fetching inventory dates:", error);
         return NextResponse.json({
             status: "error",
-            message: 'Internal server error',
+            message: "Internal server error",
         }, { status: 500 });
     }
 }
