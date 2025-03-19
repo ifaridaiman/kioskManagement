@@ -13,7 +13,7 @@ const mrsSaintDelafield = Mrs_Saint_Delafield({
 
 const ReceiptPage = () => {
   const { id } = useParams(); // Extract ID from URL
-  const [isValidId, setIsValidId] = useState<boolean | null>(null);
+  const [isValidId, setIsValidId] = useState<boolean | null>(true);
 
   useEffect(() => {
     if (!id || typeof id !== "string" || id === "failed") {
