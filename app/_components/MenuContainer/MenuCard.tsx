@@ -25,7 +25,6 @@ interface MenuCardProps {
 }
 
 const MenuCard: React.FC<MenuCardProps> = ({
-  id,
   name,
   price,
   description,
@@ -35,7 +34,6 @@ const MenuCard: React.FC<MenuCardProps> = ({
   inventoryId
 }) => {
   const [openDetail, setOpenDetail] = useState(false);
-  const dispatch = useDispatch();
   const order = useSelector((state: RootState) =>
     state.order.orders.find((order) => order.id === inventoryId)
   );
@@ -74,17 +72,13 @@ const MenuCard: React.FC<MenuCardProps> = ({
               {count > 0 ? (
                 <div className="flex items-center bg-gray-100 rounded-lg p-1">
                   <button
-                    onClick={() =>
-                      dispatch(updateQuantity({ id, quantity: count - 1 }))
-                    }
+                    onClick={() => setOpenDetail(true)}
                   >
                     <BiMinus className="w-6 h-6 text-gray-600" />
                   </button>
                   <span className="px-4">{count}</span>
                   <button
-                    onClick={() =>
-                      dispatch(updateQuantity({ id, quantity: count + 1 }))
-                    }
+                    onClick={() => setOpenDetail(true)}
                   >
                     <GoPlusCircle className="w-6 h-6 text-primary" />
                   </button>
@@ -92,9 +86,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
               ) : (
                 <GoPlusCircle
                   className="w-6 h-6 text-primary"
-                  onClick={() =>
-                    dispatch(addOrder({ id, name, price, quantity: 1 }))
-                  }
+                  onClick={() => setOpenDetail(true)}
                 />
               )}
             </div>
