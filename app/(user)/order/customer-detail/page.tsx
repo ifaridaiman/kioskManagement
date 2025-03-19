@@ -68,7 +68,13 @@ const CustomerDetail: React.FC = () => {
   }, [existingDetails, setValue]);
 
   const onSubmit = (data: CustomerFormData) => {
-    dispatch(updateCustomerDetails(data));
+
+    const sanitizedData = {
+      ...data,
+      phone: data.phone.replace(/[-\s]/g, ""), // Removes dashes and spaces
+    };
+  
+    dispatch(updateCustomerDetails(sanitizedData));
     router.push("/order/summary");
   };
 
