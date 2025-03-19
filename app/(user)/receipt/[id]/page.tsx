@@ -13,36 +13,22 @@ const mrsSaintDelafield = Mrs_Saint_Delafield({
 
 const ReceiptPage = () => {
   const { id } = useParams(); // Extract ID from URL
-  const [isValidId, setIsValidId] = useState<boolean | null>(true);
+  const [isValidId, setIsValidId] = useState<boolean | null>(false);
 
+  useEffect(() => {
+    console.log("Received ID:", id);
+  }, [id]);
+  
   useEffect(() => {
     if (!id || typeof id !== "string" || id === "failed") {
       setIsValidId(false);
 
       return;
+    }else{
+      setIsValidId(true)
     }
 
-    const fetchOrderStatus = async () => {
-      try {
-        const response = await fetch(`/api/order-status`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId: id }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || data.status === "failed") {
-          throw new Error(data.message || "Order not found");
-        }
-
-        setIsValidId(true);
-      } catch {
-        setIsValidId(false);
-      }
-    };
-
-    fetchOrderStatus();
+    
   }, [id]);
 
   return (
