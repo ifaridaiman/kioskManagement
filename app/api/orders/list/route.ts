@@ -58,10 +58,31 @@ export async function GET(req: NextRequest) {
         order_items: {
           include: {
             menus: { select: { id: true, title: true, price: true } },
+            menu_inventories:{ select: {end_date: true}}
           },
         },
       },
     });
+
+    orders.sort((a, b) => {
+      const getEarliestEndDate = (order: { order_items: { menu_inventories?: { end_date: Date | null } | null }[] }): string | null => {
+        return order.order_items
+          .map((item) =>
+            item.menu_inventories?.end_date
+              ? item.menu_inventories.end_date.toISOString().split("T")[0] // Convert Date to string (YYYY-MM-DD)
+              : null
+          )
+          .filter((date): date is string => date !== null) // Remove null values
+          .sort()[0] || null; // Get the earliest date or return null
+      };
+    
+      const aDate = getEarliestEndDate(a) ? new Date(getEarliestEndDate(a)!).getTime() : Infinity;
+      const bDate = getEarliestEndDate(b) ? new Date(getEarliestEndDate(b)!).getTime() : Infinity;
+    
+      return aDate - bDate; // Sort by earliest pickup date
+    });
+    
+    
 
     // If no orders are found
     if (orders.length === 0) {
@@ -89,6 +110,7 @@ export async function GET(req: NextRequest) {
             id: item.id,
             menu: item.menus,
             quantity: item.quantity,
+            pickupDate: item.menu_inventories
           })),
         })),
         meta: {

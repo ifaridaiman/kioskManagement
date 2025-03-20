@@ -138,6 +138,9 @@ const OrderList: React.FC = () => {
               <th className="py-2 text-center px-4 text-gray-500 font-semibold">
                 Delivery Method
               </th>
+              <th className="py-2 text-center px-4 text-gray-500 font-semibold">
+                Pickup Date
+              </th>
               <th className="py-2 text-left px-4 text-gray-500 font-semibold">
                 Action
               </th>
@@ -179,6 +182,9 @@ const OrderList: React.FC = () => {
                   </td> */}
                   <td className="py-2 px-4 text-center">
                     {order.delivery_method === "pickup" ? "Pickup" : "Delivery"}
+                  </td>
+                  <td className="py-2 px-4 text-center">
+                    {new Date(order.items[0].pickupDate.end_date).toISOString().split("T")[0]}
                   </td>
                   <td className="py-2 px-4 flex gap-2">
                     <button

@@ -6,6 +6,9 @@ export interface OrderItem {
     title: string;
     price: number;
   };
+  pickupDate:{
+    end_date: string;
+  }
 }
 
 export interface Customer {
