@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
+import { SignOutButton, UserButton } from "@clerk/nextjs";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -52,6 +52,7 @@ const NavbarAdmin = () => {
         <div className={`fixed top-0 left-0 w-full h-full bg-white z-40 transition-transform ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
           <div className="flex flex-col items-center justify-center h-full gap-8">
             <NavLinks onClick={toggleMenu} />
+            <SignOutButton/>
           </div>
         </div>
 

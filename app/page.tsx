@@ -14,6 +14,8 @@ import {
   AvailableDate,
 } from "@/types/menuCategory";
 import { clearOrder } from "@/store/slice/orderSlice";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 const OrderDaily: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -32,6 +34,25 @@ const OrderDaily: React.FC = () => {
   const [pendingDate, setPendingDate] = useState<string | null>(null); // Temporary state for the new date
 
   const dispatch = useDispatch();
+  const router = useRouter();
+  const { isSignedIn, user, isLoaded } = useUser();
+
+  useEffect(() => {
+    if (!isLoaded) return; // Wait for user to load
+
+    if (isSignedIn && user?.publicMetadata?.role) {
+      const role = user.publicMetadata.role;
+
+      if (role === "admin") {
+        router.replace("/dashboard");
+      } else if (role === "staff") {
+        router.replace("/delivery-order");
+      } else {
+        router.replace("/"); // fallback
+      }
+    }
+  }, [isSignedIn, isLoaded, user, router]);
+
   // Detect screen size and set state
   useEffect(() => {
     const checkScreenSize = () => {
