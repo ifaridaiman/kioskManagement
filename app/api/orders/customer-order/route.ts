@@ -42,6 +42,7 @@ export async function POST(req: Request): Promise<NextResponse> {
         const mailOptions: nodemailer.SendMailOptions = {
             from: `"LemangTul" <thisisaedali@gmail.com>`,
             to: email,
+            cc: `rafiqinnaqib10@gmail.com`,
             subject: "Your Order is Ready for Pickup",
             html: `
                 <p>Dear Customer,</p>

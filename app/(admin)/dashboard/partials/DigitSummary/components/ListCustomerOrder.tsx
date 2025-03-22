@@ -24,6 +24,7 @@ interface Customer {
   id: string;
   name: string;
   email: string;
+  phone_number: string;
 }
 
 interface OrderStatus {
@@ -66,7 +67,7 @@ const ListCustomerOrder: React.FC<ListCustomerOrderProps> = ({ orders }) => {
               {/* ✅ Customer & Pickup/Delivery Date */}
               <div className="flex justify-between items-center mb-2">
                 <p className="text-gray-800 text-base font-semibold">
-                  {order.id.slice(-6)}
+                  {order.id.slice(-6)} - {order.customers.phone_number}
                 </p>
                 <p className="text-gray-800 text-sm font-light">
                   {new Date(order.order_items[0].menu_inventories.end_date).toLocaleDateString("en-GB", {
