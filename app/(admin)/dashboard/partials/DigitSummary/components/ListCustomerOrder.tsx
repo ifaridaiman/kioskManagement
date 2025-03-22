@@ -67,22 +67,29 @@ const ListCustomerOrder: React.FC<ListCustomerOrderProps> = ({ orders }) => {
               {/* ✅ Customer & Pickup/Delivery Date */}
               <div className="flex justify-between items-center mb-2">
                 <p className="text-gray-800 text-base font-semibold">
-                  {order.id.slice(-6)} - {order.customers.phone_number}
+                  {order.id.slice(-6)}
                 </p>
+
                 <p className="text-gray-800 text-sm font-light">
-                  {new Date(order.order_items[0].menu_inventories.end_date).toLocaleDateString("en-GB", {
+                  {new Date(
+                    order.order_items[0].menu_inventories.end_date
+                  ).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "2-digit",
                     year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
+                    
                   })}{" "}
                   ({order.delivery_method})
                 </p>
               </div>
 
               {/* ✅ Order Status */}
+              <p className="text-gray-800 text-sm font-medium">
+                Phone Number:{" "}
+                <span className="font-semibold text-gray-700">
+                  {order.customers.phone_number}
+                </span>
+              </p>
               <p className="text-gray-700 text-sm font-medium mb-2">
                 Status: <span className="font-semibold">{latestStatus}</span>
               </p>
