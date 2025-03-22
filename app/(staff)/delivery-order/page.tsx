@@ -29,6 +29,7 @@ interface Order {
   customer: Customer;
   items: Item[];
   status: string;
+  delivery_method: string
 }
 
 const OrderListPage: React.FC = () => {
@@ -111,6 +112,20 @@ const OrderListPage: React.FC = () => {
                   <p className="text-sm mt-2">Order ID: {order.id.slice(-6)}</p>
                   <p className="text-sm">
                     Status: {order.status.replace(/_/g, " ")}
+                  </p>
+                  <p className="text-sm">
+                    Delivery Method: {order.delivery_method}
+                  </p>
+                  <p className="text-sm">
+                    Delivery Date: &nbsp;
+                    {new Date(
+                    order.items[0].pickupDate.end_date
+                  ).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    
+                  })}
                   </p>
 
                   <div className="mt-6">
