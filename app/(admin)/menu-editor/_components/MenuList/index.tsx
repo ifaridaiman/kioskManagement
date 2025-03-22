@@ -37,8 +37,8 @@ const MenuList: React.FC<MenuListProps> = ({ onEditClick }) => {
           className="px-4 py-2 border rounded-md w-full"
         />
       </div>
-      <div className="">
-        <table className="w-full rounded-tl-md">
+      <div className="overflow-auto">
+        <table className="min-w-full w-full rounded-tl-md">
           <thead className="bg-gray-200 ">
             <tr>
               <th className="py-2 text-left px-4  text-gray-500 font-semibold">

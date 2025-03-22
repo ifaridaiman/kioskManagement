@@ -44,8 +44,6 @@ const OrderList: React.FC = () => {
     fetchOrders();
   }, [statusFilter, page]); // ✅ Re-fetch when filter or page changes
 
-  
-
   const handleUpdate = (updatedOrder: Partial<Order>) => {
     setOrders((prevOrders) =>
       prevOrders.map((order) =>
@@ -86,8 +84,152 @@ const OrderList: React.FC = () => {
           </select>
         </div>
 
-        {/* Pagination Controls */}
-        <div className="flex gap-2">
+        
+      </div>
+
+      {loading && (
+        <p className="text-center text-gray-500">Loading orders...</p>
+      )}
+      {error && <p className="text-center text-red-500">{error}</p>}
+
+      {!loading && !error && (
+        <div className="overflow-auto">
+          <table className=" min-w-full w-full rounded-tl-md">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="py-2 text-left px-4 text-gray-500 font-semibold">
+                  Order ID
+                </th>
+                <th className="py-2 text-left px-4 text-gray-500 font-semibold">
+                  Customer
+                </th>
+                <th className="py-2 text-left px-4 text-gray-500 font-semibold">
+                  Quantity
+                </th>
+                <th className="py-2 text-left px-4 text-gray-500 font-semibold">
+                  Status
+                </th>
+                <th className="py-2 text-center px-4 text-gray-500 font-semibold">
+                  Delivery Method
+                </th>
+                <th className="py-2 text-center px-4 text-gray-500 font-semibold">
+                  Pickup Date
+                </th>
+                <th className="py-2 text-left px-4 text-gray-500 font-semibold">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody className="h-full">
+              {orders.length > 0 ? (
+                orders.map((order, index) => (
+                  <tr
+                    key={order.id}
+                    className={`border-b ${
+                      index % 2 === 0 ? "bg-white" : "bg-gray-100"
+                    }`}
+                  >
+                    <td className="py-2 px-4">{order.id.slice(-6)}</td>
+                    <td className="py-2 px-4">
+                      {order.customer ? order.customer.name : "Unknown"}
+                    </td>
+                    <td className="py-2 px-4">
+                      {order.items.map((item, index) => (
+                        <div key={index}>
+                          <p>
+                            <span className="font-semibold">
+                              {item.menu.title}
+                            </span>{" "}
+                            - <span>{item.quantity}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </td>
+                    <td className="py-2 px-4">
+                      <StatusPill status={order.status} />
+                    </td>
+                    {/* <td className="py-2 px-4 text-center">
+                    {order.customer?.address }
+                  </td>
+                  <td className="py-2 px-4 text-center">
+                    {order.customer?.phone_number}
+                  </td> */}
+                    <td className="py-2 px-4 text-center">
+                      {order.delivery_method === "pickup"
+                        ? "Pickup"
+                        : "Delivery"}
+                    </td>
+                    <td className="py-2 px-4 text-center">
+                      {
+                        new Date(order.items[0].pickupDate.end_date)
+                          .toISOString()
+                          .split("T")[0]
+                      }
+                    </td>
+                    <td className="py-2 px-4">
+                      <div className="h-full flex gap-2 justify-center items-center" >
+                        <button
+                          className="text-blue-500 hover:text-blue-700"
+                          onClick={() => {
+                            setSelectedOrder(order);
+                            setIsModalOpen(true);
+                          }}
+                        >
+                          <LuPencilLine size={18} />
+                        </button>
+                        <button
+                          className="text-red-500 hover:text-red-700"
+                          onClick={async () => {
+                            if (
+                              !window.confirm(
+                                "Are you sure you want to delete this order?"
+                              )
+                            )
+                              return;
+
+                            try {
+                              const response = await fetch(
+                                "/api/orders/list/delete",
+                                {
+                                  method: "DELETE",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({ orderId: order.id }),
+                                }
+                              );
+
+                              if (!response.ok) {
+                                throw new Error("Failed to delete order.");
+                              }
+
+                              setOrders((prevOrders) =>
+                                prevOrders.filter((o) => o.id !== order.id)
+                              );
+                            } catch (error) {
+                              console.error("Error deleting order:", error);
+                              alert("Failed to delete order.");
+                            }
+                          }}
+                        >
+                          <MdOutlineDelete size={18} />
+                        </button>
+                      </div>
+                      
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="text-center py-4 text-gray-500">
+                    No orders found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {/* Pagination Controls */}
+      <div className="flex gap-2 py-8 mx-4 justify-center">
           <button
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             disabled={page === 1}
@@ -112,135 +254,6 @@ const OrderList: React.FC = () => {
             Next
           </button>
         </div>
-      </div>
-
-      {loading && (
-        <p className="text-center text-gray-500">Loading orders...</p>
-      )}
-      {error && <p className="text-center text-red-500">{error}</p>}
-
-      {!loading && !error && (
-        <table className="w-full rounded-tl-md">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="py-2 text-left px-4 text-gray-500 font-semibold">
-                Order ID
-              </th>
-              <th className="py-2 text-left px-4 text-gray-500 font-semibold">
-                Customer
-              </th>
-              <th className="py-2 text-left px-4 text-gray-500 font-semibold">
-                Quantity
-              </th>
-              <th className="py-2 text-left px-4 text-gray-500 font-semibold">
-                Status
-              </th>
-              <th className="py-2 text-center px-4 text-gray-500 font-semibold">
-                Delivery Method
-              </th>
-              <th className="py-2 text-center px-4 text-gray-500 font-semibold">
-                Pickup Date
-              </th>
-              <th className="py-2 text-left px-4 text-gray-500 font-semibold">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.length > 0 ? (
-              orders.map((order, index) => (
-                <tr
-                  key={order.id}
-                  className={`border-b ${
-                    index % 2 === 0 ? "bg-white" : "bg-gray-100"
-                  }`}
-                >
-                  <td className="py-2 px-4">{order.id.slice(-6)}</td>
-                  <td className="py-2 px-4">
-                    {order.customer ? order.customer.name : "Unknown"}
-                  </td>
-                  <td className="py-2 px-4">
-                    {order.items.map((item, index) => (
-                      <div key={index}>
-                        <p>
-                          <span className="font-semibold">
-                            {item.menu.title}
-                          </span>{" "}
-                          - <span>{item.quantity}</span>
-                        </p>
-                      </div>
-                    ))}
-                  </td>
-                  <td className="py-2 px-4">
-                    <StatusPill status={order.status} />
-                  </td>
-                  {/* <td className="py-2 px-4 text-center">
-                    {order.customer?.address }
-                  </td>
-                  <td className="py-2 px-4 text-center">
-                    {order.customer?.phone_number}
-                  </td> */}
-                  <td className="py-2 px-4 text-center">
-                    {order.delivery_method === "pickup" ? "Pickup" : "Delivery"}
-                  </td>
-                  <td className="py-2 px-4 text-center">
-                    {new Date(order.items[0].pickupDate.end_date).toISOString().split("T")[0]}
-                  </td>
-                  <td className="py-2 px-4 flex gap-2">
-                    <button
-                      className="text-blue-500 hover:text-blue-700"
-                      onClick={() => {
-                        setSelectedOrder(order);
-                        setIsModalOpen(true);
-                      }}
-                    >
-                      <LuPencilLine size={18} />
-                    </button>
-                    <button
-                      className="text-red-500 hover:text-red-700"
-                      onClick={async () => {
-                        if (
-                          !window.confirm(
-                            "Are you sure you want to delete this order?"
-                          )
-                        )
-                          return;
-
-                        try {
-                          const response = await fetch("/api/orders/list/delete", {
-                            method: "DELETE",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ orderId: order.id }),
-                          });
-
-                          if (!response.ok) {
-                            throw new Error("Failed to delete order.");
-                          }
-
-                          setOrders((prevOrders) =>
-                            prevOrders.filter((o) => o.id !== order.id)
-                          );
-                        } catch (error) {
-                          console.error("Error deleting order:", error);
-                          alert("Failed to delete order.");
-                        }
-                      }}
-                    >
-                      <MdOutlineDelete size={18} />
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">
-                  No orders found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      )}
     </div>
   );
 };

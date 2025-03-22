@@ -20,8 +20,9 @@ const InventoryList: React.FC<InventoryListProps> = ({
   totalPages,
 }) => {
   return (
-    <div>
-      <table className="w-full rounded-tl-md border border-gray-300">
+    <>
+    <div className="overflow-auto mx-4">
+      <table className="min-w-full w-full rounded-tl-md border border-gray-300">
         <thead className="bg-gray-200">
           <tr>
             <th className="py-2 text-left px-4 text-gray-600 font-semibold">Date Pickup</th>
@@ -66,9 +67,9 @@ const InventoryList: React.FC<InventoryListProps> = ({
           )}
         </tbody>
       </table>
-
-      {/* Pagination Controls */}
-      <div className="flex justify-between items-center mt-4">
+    </div>
+    {/* Pagination Controls */}
+    <div className="flex justify-between items-center mt-4 mx-4">
         <button
           className={`px-4 py-2 text-white bg-gray-500 rounded-md ${
             currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-700"
@@ -93,7 +94,8 @@ const InventoryList: React.FC<InventoryListProps> = ({
           Next
         </button>
       </div>
-    </div>
+    </>
+    
   );
 };
 

@@ -10,7 +10,16 @@ import InventoryAdd from "./components/InventoryAdd";
 const Inventory = () => {
   const params = useParams();
   const menuId = params?.id as string;
-  const { inventories, menuName, isLoading, refreshInventories, deleteInventory, currentPage, setCurrentPage, totalPages } = useInventoryList(menuId);
+  const {
+    inventories,
+    menuName,
+    isLoading,
+    refreshInventories,
+    deleteInventory,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+  } = useInventoryList(menuId);
   const { toggleShowAddInventoryModal, showAddInventory } = useInventory();
 
   return (
@@ -20,20 +29,28 @@ const Inventory = () => {
           title={`Inventory Manager ${menuName}`}
           description="Update Stocks "
         >
-          <div
-            className="border-2 border-gray-300 text-gray-900 px-3 py-2 rounded-md"
-            onClick={toggleShowAddInventoryModal}
-          >
-            Create Inventory
-
+          <div className="flex md:justify-end">
+            <div
+              className="w-fit border-2 border-gray-300 text-gray-900 px-3 py-2 rounded-md"
+              onClick={toggleShowAddInventoryModal}
+            >
+              Create Inventory
+            </div>
           </div>
         </HeaderTop>
         <hr className="mb-4" />
-        <InventoryList inventories={inventories} isLoading={isLoading} deleteInventory={deleteInventory} currentPage={currentPage}
-  setCurrentPage={setCurrentPage}
-  totalPages={totalPages} />
+        <InventoryList
+          inventories={inventories}
+          isLoading={isLoading}
+          deleteInventory={deleteInventory}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+        />
       </div>
-      {showAddInventory && <InventoryAdd menuId={menuId} refreshInventories={refreshInventories} />}
+      {showAddInventory && (
+        <InventoryAdd menuId={menuId} refreshInventories={refreshInventories} />
+      )}
     </>
   );
 };
