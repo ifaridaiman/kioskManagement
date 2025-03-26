@@ -83,8 +83,6 @@ const OrderList: React.FC = () => {
             <option value="completed">Completed</option>
           </select>
         </div>
-
-        
       </div>
 
       {loading && (
@@ -104,7 +102,16 @@ const OrderList: React.FC = () => {
                   Customer
                 </th>
                 <th className="py-2 text-left px-4 text-gray-500 font-semibold">
+                  Phone Number
+                </th>
+                <th className="py-2 text-left px-4 text-gray-500 font-semibold">
+                  Address
+                </th>
+                <th className="py-2 text-left px-4 text-gray-500 font-semibold">
                   Quantity
+                </th>
+                <th className="py-2 text-left px-4 text-gray-500 font-semibold">
+                  Total Payment
                 </th>
                 <th className="py-2 text-left px-4 text-gray-500 font-semibold">
                   Status
@@ -134,6 +141,12 @@ const OrderList: React.FC = () => {
                       {order.customer ? order.customer.name : "Unknown"}
                     </td>
                     <td className="py-2 px-4">
+                      {order.customer ? order.customer.phone_number : "Unknown"}
+                    </td>
+                    <td className="py-2 px-4">
+                      {order.customer ? order.customer.address : "Unknown"}
+                    </td>
+                    <td className="py-2 px-4">
                       {order.items.map((item, index) => (
                         <div key={index}>
                           <p>
@@ -146,14 +159,19 @@ const OrderList: React.FC = () => {
                       ))}
                     </td>
                     <td className="py-2 px-4">
+                      RM{" "}
+                      {order.items
+                        .filter((item) => item.menu) // just in case any menu is null
+                        .reduce(
+                          (total, item) =>
+                            total + item.quantity * item.menu.price,
+                          0
+                        )
+                        .toFixed(2)}
+                    </td>
+                    <td className="py-2 px-4">
                       <StatusPill status={order.status} />
                     </td>
-                    {/* <td className="py-2 px-4 text-center">
-                    {order.customer?.address }
-                  </td>
-                  <td className="py-2 px-4 text-center">
-                    {order.customer?.phone_number}
-                  </td> */}
                     <td className="py-2 px-4 text-center">
                       {order.delivery_method === "pickup"
                         ? "Pickup"
@@ -167,7 +185,7 @@ const OrderList: React.FC = () => {
                       }
                     </td>
                     <td className="py-2 px-4">
-                      <div className="h-full flex gap-2 justify-center items-center" >
+                      <div className="h-full flex gap-2 justify-center items-center">
                         <button
                           className="text-blue-500 hover:text-blue-700"
                           onClick={() => {
@@ -192,7 +210,9 @@ const OrderList: React.FC = () => {
                                 "/api/orders/list/delete",
                                 {
                                   method: "DELETE",
-                                  headers: { "Content-Type": "application/json" },
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
                                   body: JSON.stringify({ orderId: order.id }),
                                 }
                               );
@@ -213,7 +233,6 @@ const OrderList: React.FC = () => {
                           <MdOutlineDelete size={18} />
                         </button>
                       </div>
-                      
                     </td>
                   </tr>
                 ))
@@ -230,30 +249,30 @@ const OrderList: React.FC = () => {
       )}
       {/* Pagination Controls */}
       <div className="flex gap-2 py-8 mx-4 justify-center">
-          <button
-            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-            disabled={page === 1}
-            className={`px-3 py-1 border rounded-md ${
-              page === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-200"
-            }`}
-          >
-            Previous
-          </button>
-          <span className="px-3 py-1">
-            {page} / {totalPages}
-          </span>
-          <button
-            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={page === totalPages}
-            className={`px-3 py-1 border rounded-md ${
-              page === totalPages
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-gray-200"
-            }`}
-          >
-            Next
-          </button>
-        </div>
+        <button
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
+          className={`px-3 py-1 border rounded-md ${
+            page === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-200"
+          }`}
+        >
+          Previous
+        </button>
+        <span className="px-3 py-1">
+          {page} / {totalPages}
+        </span>
+        <button
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={page === totalPages}
+          className={`px-3 py-1 border rounded-md ${
+            page === totalPages
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-gray-200"
+          }`}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
