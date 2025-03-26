@@ -21,6 +21,7 @@ interface OrderItem {
 }
 
 interface Customer {
+  address: string;
   id: string;
   name: string;
   email: string;
@@ -67,7 +68,7 @@ const ListCustomerOrder: React.FC<ListCustomerOrderProps> = ({ orders }) => {
               {/* ✅ Customer & Pickup/Delivery Date */}
               <div className="flex justify-between items-center mb-2">
                 <p className="text-gray-800 text-base font-semibold">
-                  {order.id.slice(-6)}
+                  {order.id.slice(-6)} - {order.customers.name}
                 </p>
 
                 <p className="text-gray-800 text-sm font-light">
@@ -77,22 +78,50 @@ const ListCustomerOrder: React.FC<ListCustomerOrderProps> = ({ orders }) => {
                     day: "2-digit",
                     month: "2-digit",
                     year: "numeric",
-                    
                   })}{" "}
                   ({order.delivery_method})
                 </p>
               </div>
 
               {/* ✅ Order Status */}
-              <p className="text-gray-800 text-sm font-medium">
-                Phone Number:{" "}
-                <span className="font-semibold text-gray-700">
-                  {order.customers.phone_number}
-                </span>
-              </p>
-              <p className="text-gray-700 text-sm font-medium mb-2">
-                Status: <span className="font-semibold">{latestStatus}</span>
-              </p>
+              <div className="grid grid-cols-3">
+                <div>
+                  <p className="text-gray-800 text-sm font-medium">
+                    Phone Number:{" "}
+                    <span className="font-semibold text-gray-700">
+                      {order.customers.phone_number}
+                    </span>
+                  </p>
+                  <p className="text-gray-700 text-sm font-medium mb-2">
+                    Status:{" "}
+                    <span className="font-semibold">{latestStatus}</span>
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-700 text-sm font-medium mb-2">
+                    Address:
+                  </p>
+                  <p className="text-gray-700 text-sm mb-2 font-semibold">
+                    {order.customers.address}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-700 text-sm font-medium mb-2">
+                    Total Amount:
+                  </p>
+                  <p className="text-gray-700 text-sm mb-2 font-semibold">
+                    RM{" "}
+                    {order.order_items
+                      .filter((item) => item.menus)
+                      .reduce((total, item) => {
+                        return (
+                          total + item.quantity * parseFloat(item.menus.price)
+                        );
+                      }, 0)
+                      .toFixed(2)}
+                  </p>
+                </div>
+              </div>
 
               {/* ✅ Order Items */}
               <div className="bg-gray-100 p-3 rounded-md">
