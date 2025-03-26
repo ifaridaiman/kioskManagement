@@ -1,4 +1,3 @@
- 
 import React, { useState } from "react";
 
 interface OrderItem {
@@ -14,6 +13,9 @@ interface StatusCardProps {
   description: string;
   orderId: string;
   order?: OrderItem[];
+  payment?: {
+    status: string;
+  };
 }
 
 const StatusCard: React.FC<StatusCardProps> = ({
@@ -23,6 +25,8 @@ const StatusCard: React.FC<StatusCardProps> = ({
   order = [], // Default to empty array if order is undefined
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -39,9 +43,13 @@ const StatusCard: React.FC<StatusCardProps> = ({
       <div className="flex justify-between items-center gap-4 cursor-pointer">
         <div className="flex gap-4">
           <div>
-            <p className="text-base font-bold text-gray-900">{getShortOrderId(orderId)} - <span className="text-sm font-semibold text-primary capitalize">{status}</span></p>
+            <p className="text-base font-bold text-gray-900">
+              {getShortOrderId(orderId)} -{" "}
+              <span className="text-sm font-semibold text-primary capitalize">
+                {status}
+              </span>
+            </p>
             <p className="text-sm font-light text-gray-400">{description}</p>
-            
           </div>
         </div>
         <div>
@@ -82,19 +90,36 @@ const StatusCard: React.FC<StatusCardProps> = ({
         <div className="mt-4">
           <p className="font-bold text-sm">Order</p>
           {order.length > 0 ? (
-            order.map((item: OrderItem, idx: number) => (
-              <div key={idx} className="text-gray-600 text-sm">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-gray-700 font-semibold">
-                      {item.menu.title}
-                    </p>
-                    <p className="text-gray-600 text-xs">RM {item.menu.price}</p>
+            <>
+              {order
+                .filter((item) => item.menu) // filter out null menus
+                .map((item: OrderItem, idx: number) => (
+                  <div key={idx} className="text-gray-600 text-sm">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="text-gray-700 font-semibold">
+                          {item.menu.title}
+                        </p>
+                        <p className="text-gray-600 text-xs">
+                          RM {item.menu.price}
+                        </p>
+                      </div>
+                      <p>x {item.quantity}</p>
+                    </div>
                   </div>
-                  <p>x {item.quantity}</p>
-                </div>
-              </div>
-            ))
+                ))}
+              <p className="mt-2 font-semibold text-sm text-right">
+                Total Order: RM{" "}
+                {order
+                  .filter((item) => item.menu)
+                  .reduce(
+                    (sum, item) =>
+                      sum + item.quantity * item.menu.price,
+                    0
+                  )
+                  .toFixed(2)}
+              </p>
+            </>
           ) : (
             <p className="text-gray-500 text-sm">No items in this order.</p>
           )}
