@@ -100,40 +100,43 @@ const OrderRaya: React.FC = () => {
 
                 <div className="mt-2">
                   <div className="space-y-2">
-                    {orderData.filter(
-                      (order: any) => order.payment?.status === "paid"
-                    ).length > 0 ? (
-                      orderData
-                        .filter(
-                          (order: any) => order.payment?.status === "paid"
-                        )
-                        .map((order: any) => (
-                          <StatusCard
-                            key={order.id}
-                            status={
-                              order.statuses.length > 0
-                                ? order.statuses[order.statuses.length - 1]
-                                    .status
-                                : "Unknown"
-                            }
-                            description={`Updated at: ${
-                              order.statuses.length > 0
-                                ? new Date(
-                                    order.statuses[
-                                      order.statuses.length - 1
-                                    ].created_at
-                                  ).toLocaleString()
-                                : "No date"
-                            }`}
-                            order={order.order_item}
-                            orderId={order.id}
-                            payment={order.payment}
-                          />
-                        ))
-                    ) : (
-                      <p className="text-white text-sm font-semibold">
-                        No order from this number.
-                      </p>
+                    {orderData && (
+                      <>
+                        <div className="mt-2">
+                          <div className="space-y-2">
+                            {orderData.length > 0 ? (
+                              orderData.map((order: any) => (
+                                <StatusCard
+                                  key={order.id}
+                                  status={
+                                    order.statuses.length > 0
+                                      ? order.statuses[
+                                          order.statuses.length - 1
+                                        ].status
+                                      : "Unknown"
+                                  }
+                                  description={`Updated at: ${
+                                    order.statuses.length > 0
+                                      ? new Date(
+                                          order.statuses[
+                                            order.statuses.length - 1
+                                          ].created_at
+                                        ).toLocaleString()
+                                      : "No date"
+                                  }`}
+                                  order={order.order_item}
+                                  orderId={order.id}
+                                  payment={order.payment}
+                                />
+                              ))
+                            ) : (
+                              <p className="text-white text-sm font-semibold">
+                                No order from this number.
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
