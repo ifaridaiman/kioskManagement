@@ -16,6 +16,7 @@ interface StatusCardProps {
   payment?: {
     status: string;
   };
+  pickupDate?: string | null;
 }
 
 const StatusCard: React.FC<StatusCardProps> = ({
@@ -23,10 +24,9 @@ const StatusCard: React.FC<StatusCardProps> = ({
   description,
   orderId,
   order = [], // Default to empty array if order is undefined
+  pickupDate
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-
-  
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -49,7 +49,14 @@ const StatusCard: React.FC<StatusCardProps> = ({
                 {status}
               </span>
             </p>
+            <p className="text-sm font-normal text-gray-500">
+              Pickup Date:{" "}
+              {pickupDate
+                ? new Date(pickupDate).toLocaleDateString()
+                : "Not available"}
+            </p>
             <p className="text-sm font-light text-gray-400">{description}</p>
+            
           </div>
         </div>
         <div>
@@ -113,8 +120,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
                 {order
                   .filter((item) => item.menu)
                   .reduce(
-                    (sum, item) =>
-                      sum + item.quantity * item.menu.price,
+                    (sum, item) => sum + item.quantity * item.menu.price,
                     0
                   )
                   .toFixed(2)}

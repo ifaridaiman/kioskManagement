@@ -17,12 +17,11 @@ const OrderRaya: React.FC = () => {
       setError("Please enter a valid phone number.");
       return;
     }
-
+  
     setLoading(true);
     setError(null);
-
     setOrderData(null);
-
+  
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/orders?phoneNumber=${phoneNumber}`,
@@ -31,20 +30,47 @@ const OrderRaya: React.FC = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-
+  
       const result = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(result.error || "Failed to fetch order status.");
       }
-
-      setOrderData(result.data);
+  
+      // Fetch pickup dates for each order
+      const ordersWithPickupDate = await Promise.all(
+        result.data.map(async (order: any) => {
+          try {
+            const res = await fetch("/api/temp/pickupDate", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id: order.id }),
+            });
+  
+            const pickupResult = await res.json();
+  
+            return {
+              ...order,
+              pickupDate: pickupResult?.data?.[0]?.end_date || null,
+            };
+          } catch (err) {
+            console.error("Error fetching pickup date for order:", order.id, err);
+            return {
+              ...order,
+              pickupDate: null,
+            };
+          }
+        })
+      );
+  
+      setOrderData(ordersWithPickupDate);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <>
@@ -127,6 +153,7 @@ const OrderRaya: React.FC = () => {
                                   order={order.order_item}
                                   orderId={order.id}
                                   payment={order.payment}
+                                  pickupDate={order.pickupDate}
                                 />
                               ))
                             ) : (
