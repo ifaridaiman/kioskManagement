@@ -16,6 +16,7 @@ import {
 import { clearOrder } from "@/store/slice/orderSlice";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import NavbarCustomer from "@/components/Navbar/NavbarCustomer";
 
 const OrderDaily: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -242,7 +243,9 @@ const OrderDaily: React.FC = () => {
           </p>
         </div>
       )}
+      
       <div className="md:hidden">
+      <NavbarCustomer />
         <div className="md:max-w-80 mx-auto">
           <div className="flex flex-col h-screen">
             {isLoadingTabs && <p>Loading tabs...</p>}
