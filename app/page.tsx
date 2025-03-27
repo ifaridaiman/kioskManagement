@@ -235,14 +235,15 @@ const OrderDaily: React.FC = () => {
   return (
     <>
       {showWarning && (
-        <div className="bg-yellow-300 text-yellow-900 p-4 text-center">
+        <div className="bg-yellow-300 text-yellow-900 p-4 text-center hidden">
           <p>
-            This page is not optimized for larger screen. Please use a <span className="hidden">{isMobile}</span>mobile phone 
-            for better experience.
+            This page is not optimized for larger screen. Please use a{" "}
+            <span className="hidden">{isMobile}</span>mobile phone for better
+            experience.
           </p>
         </div>
       )}
-      <div className="md:hidden">
+      <div className="hidden">
         <div className="md:max-w-80 mx-auto">
           <div className="flex flex-col h-screen">
             {isLoadingTabs && <p>Loading tabs...</p>}
@@ -291,6 +292,18 @@ const OrderDaily: React.FC = () => {
           </div>
         )}
       </div>
+      <div className="flex justify-center items-center h-screen text-center">
+      <div className="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+        <h1 className="font-size: 3em; color: #333;">Oops! 🚧</h1>
+        <p className="font-size: 1.5em; color: #555;">
+          {`We're currently updating our database server.`}
+        </p>
+        <p className="font-size: 1.2em; color: #777;">
+          Our site will be back shortly. Thank you for your patience!
+        </p>
+      </div>
+      </div>
+      
     </>
   );
 };
