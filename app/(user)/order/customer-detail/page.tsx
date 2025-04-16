@@ -125,7 +125,7 @@ const CustomerDetail: React.FC = () => {
           {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
         </div>
 
-        <div className="mt-4 flex flex-col">
+        <div className="mt-4 flex flex-col " id="remarks">
           <label>Remarks</label>
           <textarea
             {...register("remarks")}
