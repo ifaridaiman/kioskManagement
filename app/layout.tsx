@@ -4,6 +4,8 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Providers } from "@/app/provider";
 import { Analytics } from "@vercel/analytics/react";
+import Script from 'next/script'
+
 const inter = Inter({
   variable: "--font-inter-sans",
   subsets: ["latin"],
@@ -32,6 +34,10 @@ export default function RootLayout({
           <Providers>{children}</Providers>
           <Analytics />
         </body>
+        <Script 
+         defer src="https://cloud.umami.is/script.js" data-website-id="b7ca31b3-b33a-4eca-8a50-464448bb6ba9"
+        />
+        
       </html>
     </ClerkProvider>
   );
