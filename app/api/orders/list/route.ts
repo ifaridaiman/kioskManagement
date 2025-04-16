@@ -105,6 +105,7 @@ export async function GET(req: NextRequest) {
           payment_method: order.payment_method,
           delivery_method: order.delivery_method,
           created_at: order.created_at,
+          remarks: order.remarks,
           status: order.order_statuses.length > 0 ? order.order_statuses[0].status : "Unknown",
           items: order.order_items.map(item => ({
             id: item.id,

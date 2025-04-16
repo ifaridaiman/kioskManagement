@@ -27,6 +27,7 @@ export interface Order {
   created_at: string;
   status: string;
   items: OrderItem[];
+  remarks?: string;
 }
 
 export interface OrdersApiResponse {

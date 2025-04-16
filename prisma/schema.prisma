@@ -142,6 +142,7 @@ model menus {
   created_at       DateTime?          @db.Timestamp(0)
   updated_at       DateTime?          @db.Timestamp(0)
   deleted_at       DateTime?          @db.Timestamp(0)
+  remarks          String?            @db.VarChar(10485760)
   menu_assets      menu_assets[]
   menu_inventories menu_inventories[]
   menu_categories  menu_categories    @relation(fields: [menu_category_id], references: [id], onDelete: Cascade, map: "menus_menu_category_id_foreign")
@@ -213,6 +214,7 @@ model orders {
   updated_at      DateTime?        @db.Timestamp(0)
   deleted_at      DateTime?        @db.Timestamp(0)
   status          String           @default("active") @db.VarChar(255)
+  remarks         String?          @db.VarChar(255)
   order_items     order_items[]
   order_statuses  order_statuses[]
   customers       customers?       @relation(fields: [customer_id], references: [id], onDelete: Cascade, map: "orders_customer_id_foreign")
@@ -285,4 +287,26 @@ model users {
   remember_token    String?   @db.VarChar(100)
   created_at        DateTime? @db.Timestamp(0)
   updated_at        DateTime? @db.Timestamp(0)
+}
+
+model audits {
+  id               BigInt    @id @default(autoincrement())
+  user_type        String?   @db.VarChar(255)
+  user_id_old      BigInt?
+  event            String    @db.VarChar(255)
+  auditable_type   String    @db.VarChar(255)
+  auditable_id_old BigInt?
+  old_values       String?
+  new_values       String?
+  url              String?
+  ip_address       String?   @db.Inet
+  user_agent       String?   @db.VarChar(1023)
+  tags             String?   @db.VarChar(255)
+  created_at       DateTime? @db.Timestamp(0)
+  updated_at       DateTime? @db.Timestamp(0)
+  user_id          String?   @db.Uuid
+  auditable_id     String?   @db.Uuid
+
+  @@index([auditable_type, auditable_id_old], map: "audits_auditable_type_auditable_id_index")
+  @@index([user_id_old, user_type], map: "audits_user_id_user_type_index")
 }

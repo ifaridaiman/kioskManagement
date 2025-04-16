@@ -111,6 +111,10 @@ const OrderList: React.FC = () => {
                   Quantity
                 </th>
                 <th className="py-2 text-left px-4 text-gray-500 font-semibold">
+                  Remarks
+                </th>
+
+                <th className="py-2 text-left px-4 text-gray-500 font-semibold">
                   Total Payment
                 </th>
                 <th className="py-2 text-left px-4 text-gray-500 font-semibold">
@@ -158,6 +162,7 @@ const OrderList: React.FC = () => {
                         </div>
                       ))}
                     </td>
+                    <td className="py-2 px-4">{order.remarks}</td>
                     <td className="py-2 px-4">
                       RM{" "}
                       {order.items
