@@ -17,6 +17,7 @@ const customerSchema = z.object({
   phone: z.string().min(10, "Phone number must be at least 10 characters"),
   email: z.string().email("Invalid email address"),
   address: z.string().min(1, "Address is required"),
+  pickupTime: z.string().min(1, "Pickup time is required"),
   remarks: z.string().optional().default(""),
   deliveryMethod: z.enum(["pickup", "delivery"]),
   paymentMethod: z.enum(["cod", "online"]),
@@ -53,6 +54,7 @@ const CustomerDetail: React.FC = () => {
       phone: "",
       email: "",
       address: "",
+      pickupTime: "2pm",
       remarks: "",
       deliveryMethod: "pickup",
       paymentMethod: "online",
@@ -68,10 +70,10 @@ const CustomerDetail: React.FC = () => {
   }, [existingDetails, setValue]);
 
   const onSubmit = (data: CustomerFormData) => {
-
     const sanitizedData = {
       ...data,
-      phone: data.phone.replace(/[-\s]/g, ""), // Removes dashes and spaces
+      phone: data.phone.replace(/[-\s]/g, ""),
+      remarks: `${data.pickupTime} - ${data.remarks}`,
     };
   
     dispatch(updateCustomerDetails(sanitizedData));
@@ -157,6 +159,18 @@ const CustomerDetail: React.FC = () => {
           >
             <option value="online">Online Payment</option>
             {/* <option value="cod">Cash</option> */}
+          </select>
+        </div>
+
+        <div className="mt-4 flex flex-col">
+          <label>Pickup Time</label>
+          <select
+            {...register("pickupTime")}
+            className="border border-gray-400 rounded p-2 mt-2"
+          >
+            <option value="2pm">2pm</option>
+            <option value="4pm">4pm</option>
+            <option value="6pm">6pm</option>
           </select>
         </div>
 

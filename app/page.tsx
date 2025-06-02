@@ -66,6 +66,12 @@ const OrderDaily: React.FC = () => {
       }
     };
 
+    const rerouteToComingSoon = () => {
+      router.replace("/coming-soon");
+    };
+
+    rerouteToComingSoon();
+
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
 

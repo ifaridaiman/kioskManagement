@@ -5,9 +5,10 @@ const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)',
   '/',
   '/coming-soon',
-  '/order(.*)',
-  '/customer-detail',
-  '/receipt/(.*)'
+  // '/order(.*)',
+  // '/customer-detail',
+  // '/receipt/(.*)',
+  // '/coming-soon'
 ]);
 
 const isAdminRoute = createRouteMatcher([
@@ -26,6 +27,8 @@ const isStaffRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, request) => {
   const { sessionId, sessionClaims } = await auth();
 
+  
+
   const isProtected = !isPublicRoute(request);
 
   // If user is not signed in and route is protected, redirect to sign-in
@@ -33,6 +36,8 @@ export default clerkMiddleware(async (auth, request) => {
     const url = new URL('/sign-in', request.url);
     return NextResponse.redirect(url);
   }
+
+  
 
   const role = sessionClaims?.metadata?.role;
 
