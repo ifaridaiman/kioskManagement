@@ -66,11 +66,11 @@ const OrderDaily: React.FC = () => {
       }
     };
 
-    const rerouteToComingSoon = () => {
-      router.replace("/coming-soon");
-    };
+    // const rerouteToComingSoon = () => {
+    //   router.replace("/coming-soon");
+    // };
 
-    rerouteToComingSoon();
+    // rerouteToComingSoon();
 
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
