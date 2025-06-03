@@ -24,13 +24,13 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
             <p className="text-black font-bold text-xl">{item.title}</p>
             {item.menus.map((menu: MenuItem) => {
               const imageUrl =
-                item.title === "Lemang"
+                item.title === "Lemang Batang"
                   ? "/assets/upload/menu/lemangs.jpeg"
                   : item.title === "Rendang"
-                  ? menu.title.includes("ayam")
+                  ? menu.title.includes("Ayam")
                     ? "/assets/upload/menu/rendang-ayam.jpg"
                     : "/assets/upload/menu/rendang-daging.jpg"
-                  : item.title === "Savoury"
+                  : item.title === "Kuah Kacang"
                   ? "/assets/upload/menu/kuah-kacang.jpg"
                   : item.title === "Serunding"
                   ? "/assets/upload/menu/chicken-floss.jpg"
@@ -46,9 +46,10 @@ const MenuContainer: React.FC<MenuContainerProps> = ({ menus, typeId }) => {
                     orders.find((order) => order.id === menu.id)?.quantity || 0
                   }
                   imageUrl={
-                    menu.image_url
-                    ? `${process.env.NEXT_PUBLIC_API_URL_IMAGE}/${menu.image_url.replace(/^\//, '')}`
-                    : imageUrl
+                    imageUrl
+                    // menu.image_url
+                    // ? `${process.env.NEXT_PUBLIC_API_URL_IMAGE}/${imageUrl.replace(/^\//, '')}`
+                    // : imageUrl
                   }
                   description={menu.description}
                   category={item.title}
