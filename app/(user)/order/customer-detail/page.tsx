@@ -167,8 +167,9 @@ const CustomerDetail: React.FC = () => {
           <select
             {...register("pickupTime")}
             className="border border-gray-400 rounded p-2 mt-2"
+            defaultValue="default"
           >
-            <option value="default" selected>Choose Pickup Time</option>
+            <option value="default">Choose Pickup Time</option>
             <option value="2pm">2pm</option>
             <option value="4pm">4pm</option>
             <option value="6pm">6pm</option>
